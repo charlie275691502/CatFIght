@@ -71,8 +71,8 @@ namespace Gameplay
 			_prop = new GameplayProperty(
 				new GameplayState.Open(), 
 				new List<CatProperty>(){ 
-					new CatProperty(catId++, CatType.Tower, true, -1, 20, 0, 0, 0),
-					new CatProperty(catId++, CatType.Tower, false, GameplayUtility.Length + 1, 20, 0, 0, 0)
+					new CatProperty(catId++, CatType.Tower, true, -1, 20, 0, 0, 0, false),
+					new CatProperty(catId++, CatType.Tower, false, GameplayUtility.Length + 1, 20, 0, 0, 0, false)
 				},
 				new List<CardProperty>(){ },
 				new List<CardProperty>(){ 
@@ -184,7 +184,7 @@ namespace Gameplay
 		
 		private void _UpdateBattle()
 		{
-			var cats = _prop.Cats.ToList();
+			var cats = _prop.Cats.Where(cat => cat.HP > 0).ToList();
 			for(int i=0; i<cats.Count(); i++)
 			{
 				var cat = cats[i];
@@ -228,6 +228,7 @@ namespace Gameplay
 			for(int i=0; i<cats.Count(); i++)
 			{
 				var cat = cats[i];
+				var isAttacking = false;
 				if (cat.IsEnemy)
 				{
 					for (int j=1; j<=cat.Range; j++)
@@ -237,6 +238,7 @@ namespace Gameplay
 							if(cats[k].IsEnemy != cat.IsEnemy && cats[k].Position == cat.Position + j)
 							{
 								cats[k] = cats[k] with {HP = cats[k].HP - cats[i].ATK};
+								isAttacking = true;
 							}
 						}
 					}
@@ -249,15 +251,16 @@ namespace Gameplay
 							if(cats[k].IsEnemy != cat.IsEnemy && cats[k].Position == cat.Position - j)
 							{
 								cats[k] = cats[k] with {HP = cats[k].HP - cats[i].ATK};
+								isAttacking = true;
 							}
 						}
 					}
 				}
+				cats[i] = cats[i] with {IsAttacking = isAttacking };
 			}
 			
 			if (cats.All(otherCat => otherCat.Position != 0))
 			{
-				UnityEngine.Debug.LogError(second);
 				_timelines
 					.FirstOrNone(timeline => timeline.Second == second)
 					.MatchSome(timeline => 
@@ -265,22 +268,22 @@ namespace Gameplay
 						switch(timeline.CatType)
 						{
 							case CatType.Archer:
-								cats.Add(new CatProperty(catId++, CatType.Archer, true, 0, 1, 1, 3, 10));
+								cats.Add(new CatProperty(catId++, CatType.Archer, true, 0, 1, 1, 3, 10, false));
 								break;
 							case CatType.Warrior:
-								cats.Add(new CatProperty(catId++, CatType.Warrior, true, 0, 4, 1, 5, 1));
+								cats.Add(new CatProperty(catId++, CatType.Warrior, true, 0, 4, 1, 5, 1, false));
 								break;
 							case CatType.Mage:
-								cats.Add(new CatProperty(catId++, CatType.Mage, true, 0, 2, 2, 3, 5));
+								cats.Add(new CatProperty(catId++, CatType.Mage, true, 0, 2, 2, 3, 5, false));
 								break;
 							case CatType.Tank:
-								cats.Add(new CatProperty(catId++, CatType.Tank, true, 0, 10, 1, 6, 1));
+								cats.Add(new CatProperty(catId++, CatType.Tank, true, 0, 10, 1, 6, 1, false));
 								break;
 							case CatType.Gun:
-								cats.Add(new CatProperty(catId++, CatType.Tank, true, 0, 3, 2, 1, 10));
+								cats.Add(new CatProperty(catId++, CatType.Tank, true, 0, 3, 2, 1, 10, false));
 								break;
 							case CatType.Wizard:
-								cats.Add(new CatProperty(catId++,CatType.Wizard, true, 0, 2, 3, 3, 5));
+								cats.Add(new CatProperty(catId++,CatType.Wizard, true, 0, 2, 3, 3, 5, false));
 								break;
 						}
 					});
@@ -288,7 +291,7 @@ namespace Gameplay
 			
 			_prop = _prop with 
 			{
-				Cats = cats.Where(cat => cat.HP > 0).ToList()
+				Cats = cats
 			};
 		}
 		
@@ -298,22 +301,22 @@ namespace Gameplay
 			switch(card.CardType)
 			{
 				case CardType.Archer:
-					_prop.Cats.Add(new CatProperty(catId++, CatType.Archer, false, GameplayUtility.Length, 1, 1, 3, 10));
+					_prop.Cats.Add(new CatProperty(catId++, CatType.Archer, false, GameplayUtility.Length, 1, 1, 3, 10, false));
 					break;
 				case CardType.Warrior:
-					_prop.Cats.Add(new CatProperty(catId++, CatType.Warrior, false, GameplayUtility.Length, 4, 1, 5, 1));
+					_prop.Cats.Add(new CatProperty(catId++, CatType.Warrior, false, GameplayUtility.Length, 4, 1, 5, 1, false));
 					break;
 				case CardType.Mage:
-					_prop.Cats.Add(new CatProperty(catId++, CatType.Mage, false, GameplayUtility.Length, 2, 2, 3, 5));
+					_prop.Cats.Add(new CatProperty(catId++, CatType.Mage, false, GameplayUtility.Length, 2, 2, 3, 5, false));
 					break;
 				case CardType.Tank:
-					_prop.Cats.Add(new CatProperty(catId++, CatType.Tank, false, GameplayUtility.Length, 10, 1, 6, 1));
+					_prop.Cats.Add(new CatProperty(catId++, CatType.Tank, false, GameplayUtility.Length, 10, 1, 6, 1, false));
 					break;
 				case CardType.Gun:
-					_prop.Cats.Add(new CatProperty(catId++, CatType.Tank, false, GameplayUtility.Length, 3, 2, 1, 10));
+					_prop.Cats.Add(new CatProperty(catId++, CatType.Tank, false, GameplayUtility.Length, 3, 2, 1, 10, false));
 					break;
 				case CardType.Wizard:
-					_prop.Cats.Add(new CatProperty(catId++,CatType.Wizard, false, GameplayUtility.Length, 2, 3, 3, 5));
+					_prop.Cats.Add(new CatProperty(catId++,CatType.Wizard, false, GameplayUtility.Length, 2, 3, 3, 5, false));
 					break;
 				case CardType.DoubleDamage:
 					break;

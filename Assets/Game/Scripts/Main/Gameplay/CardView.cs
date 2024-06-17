@@ -1,4 +1,5 @@
 using System;
+using Optional.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,16 +21,23 @@ namespace Gameplay
 	
 	public record CardProperty(CardType CardType);
 
+	[Serializable]
+	public class ImageKeyPair
+	{
+		public CardType CardType;
+		public Sprite Sprite;
+	}
+
 	public class CardView : MonoBehaviour
 	{
 		[SerializeField]
 		private GameObject _panel;
 		[SerializeField]
-		private Text _cardTitle;
-		[SerializeField]
 		private Image _cardImage;
 		[SerializeField]
 		private Button _button;
+		[SerializeField]
+		private ImageKeyPair[] _sprites;
 
 		private CardProperty _prop;
 		
@@ -56,7 +64,9 @@ namespace Gameplay
 
 		private void _Render(CardProperty prop)
 		{
-			_cardTitle.text = prop.CardType.ToString();
+			_sprites
+				.FirstOrNone(pair => pair.CardType == prop.CardType)
+				.MatchSome(pair => _cardImage.sprite = pair.Sprite);
 		}
 	}
 }
