@@ -1,4 +1,6 @@
 using System;
+using Battle;
+using Deck;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,7 +8,7 @@ namespace Gameplay
 {
 	public interface IGameplayView
 	{
-		void RegisterCallback(Action onConfirm);
+		void RegisterCallback(IBattleView battleView, IDeckView deckView, Action onConfirm);
 		void Render(GameplayProperty prop);
 	}
 
@@ -20,10 +22,14 @@ namespace Gameplay
 		private Action _onConfirm;
 
 		private GameplayProperty _prop;
+		private IBattleView _battleView;
+		private IDeckView _deckView;
 
-		void IGameplayView.RegisterCallback(Action onConfirm)
+		void IGameplayView.RegisterCallback(IBattleView battleView, IDeckView deckView, Action onConfirm)
 		{
 			_onConfirm = onConfirm;
+			_battleView = battleView;
+			_deckView = deckView;
 
 			_button.onClick.AddListener(_OnConfirm);
 		}
@@ -66,7 +72,8 @@ namespace Gameplay
 
 		private void _Render(GameplayProperty prop)
 		{
-			
+			_battleView.Render(prop);
+			_deckView.Render(prop);
 		}
 
 		private void _OnConfirm()

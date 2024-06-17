@@ -1,4 +1,5 @@
 using System;
+using Gameplay;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,11 +8,9 @@ namespace Deck
 	public interface IDeckView
 	{
 		void RegisterCallback(Action onConfirm);
-		void Render(DeckProperty prop);
+		void Render(GameplayProperty prop);
 	}
 	
-	public record DeckProperty();
-
 	public class DeckView : MonoBehaviour, IDeckView
 	{
 		[SerializeField]
@@ -19,7 +18,7 @@ namespace Deck
 
 		private Action _onConfirm;
 
-		private DeckProperty _prop;
+		private GameplayProperty _prop;
 
 		void IDeckView.RegisterCallback(Action onConfirm)
 		{
@@ -28,7 +27,7 @@ namespace Deck
 			_button.onClick.AddListener(_OnConfirm);
 		}
 
-		void IDeckView.Render(DeckProperty prop)
+		void IDeckView.Render(GameplayProperty prop)
 		{
 			if (_prop == prop)
 				return;
@@ -37,7 +36,7 @@ namespace Deck
 			_Render(prop);
 		}
 
-		private void _Render(DeckProperty prop)
+		private void _Render(GameplayProperty prop)
 		{
 			
 		}

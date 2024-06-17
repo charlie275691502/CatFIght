@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using Battle;
 using Codice.CM.Client.Differences.Merge;
 using Cysharp.Threading.Tasks;
+using Deck;
 using Summary;
 
 namespace Gameplay
@@ -20,12 +23,12 @@ namespace Gameplay
 		public record Close() : GameplayState;
 	}
 
-	public record GameplayProperty(GameplayState State);
+	public record GameplayProperty(GameplayState State, List<CatProperty> Cats);
 	public record GameplaySubTabReturn(GameplaySubTabReturnType Type);
-
+	
 	public interface IGameplayPresenter
 	{
-		UniTask<GameplaySubTabReturn> Run();
+		UniTask Run();
 	}
 
 	public class GameplayPresenter : IGameplayPresenter
@@ -35,20 +38,21 @@ namespace Gameplay
 		private GameplayProperty _prop;
 		private ISummaryPresenter _summaryPresenter;
 
-		public GameplayPresenter(IGameplayView view, ISummaryPresenter summaryPresenter)
+		public GameplayPresenter(IGameplayView view, IBattleView battleView, IDeckView deckView, ISummaryPresenter summaryPresenter)
 		{
 			_view = view;
 			_summaryPresenter = summaryPresenter;
 
 			_view.RegisterCallback(
+				battleView,
+				deckView,
 				() =>
 					_ChangeStateIfIdle(new GameplayState.Confirm()));
 		}
 
-		async UniTask<GameplaySubTabReturn> IGameplayPresenter.Run()
+		async UniTask IGameplayPresenter.Run()
 		{
-			_prop = new GameplayProperty(new GameplayState.Open());
-			var ret = new GameplaySubTabReturn(new GameplaySubTabReturnType.Close());
+			_prop = new GameplayProperty(new GameplayState.Open(), new List<CatProperty>(){ new CatProperty(1, "Cat", false, 13, 39), new CatProperty(2, "Cat", true, 17, 39) });
 			
 			while (_prop.State is not GameplayState.Close)
 			{
@@ -80,7 +84,6 @@ namespace Gameplay
 			}
 
 			_view.Render(_prop);
-			return ret;
 		}
 
 		private void _ChangeStateIfIdle(GameplayState targetState, Action onChangeStateSuccess = null)
