@@ -9,6 +9,7 @@ using Codice.CM.Client.Differences.Merge;
 using Common;
 using Cysharp.Threading.Tasks;
 using Deck;
+using Main;
 using Optional.Collections;
 using PlasticGui.Configuration.OAuth;
 using Summary;
@@ -35,20 +36,22 @@ namespace Gameplay
 	
 	public interface IGameplayPresenter
 	{
-		UniTask Run();
+		UniTask Run(TimelinePair[] timelines);
 	}
 	
 	public static class GameplayUtility
 	{
 		public const int Length = 50;
 	}
-
+	
 	public class GameplayPresenter : IGameplayPresenter
 	{
 		private IGameplayView _view;
 
 		private GameplayProperty _prop;
 		private ISummaryPresenter _summaryPresenter;
+		private TimelinePair[] _timelines;
+		
 		
 		public GameplayPresenter(IGameplayView view, IBattleView battleView, IDeckView deckView, ISummaryPresenter summaryPresenter)
 		{
@@ -62,11 +65,15 @@ namespace Gameplay
 					_ChangeStateIfIdle(new GameplayState.OnClickCard(index)));
 		}
 
-		async UniTask IGameplayPresenter.Run()
+		async UniTask IGameplayPresenter.Run(TimelinePair[] timelines)
 		{
+			_timelines = timelines;
 			_prop = new GameplayProperty(
 				new GameplayState.Open(), 
-				new List<CatProperty>(){ },
+				new List<CatProperty>(){ 
+					new CatProperty(catId++, CatType.Tower, true, -1, 20, 0, 0, 0),
+					new CatProperty(catId++, CatType.Tower, false, GameplayUtility.Length + 1, 20, 0, 0, 0)
+				},
 				new List<CardProperty>(){ },
 				new List<CardProperty>(){ 
 					new CardProperty(CardType.Warrior),
@@ -134,11 +141,13 @@ namespace Gameplay
 		
 		float battle_time = 0f;
 		float battle_time_threshold = 1f;
+		int second = 0;
 		private void _TryUpdateBattle()
 		{
 			battle_time += UnityEngine.Time.deltaTime;
 			if (battle_time >= battle_time_threshold)
 			{
+				second ++;
 				_UpdateBattle();
 				battle_time = 0f;
 			}
@@ -162,7 +171,15 @@ namespace Gameplay
 		
 		private void _UpdateCard()
 		{
-			_prop.HandCards.Add(_prop.DrawCards[UnityEngine.Random.Range(0, _prop.DrawCards.Count())]);
+			if(_prop.HandCards.Count() == 0)
+			{
+				_prop.DrawCards.AddRange(_prop.GraveCards);
+				_prop.GraveCards.Clear();
+			}
+			if(_prop.HandCards.Count() < 5)
+			{
+				_prop.HandCards.Add(_prop.DrawCards[UnityEngine.Random.Range(0, _prop.DrawCards.Count())]);
+			}
 		}
 		
 		private void _UpdateBattle()
@@ -174,10 +191,15 @@ namespace Gameplay
 				if (cat.IsEnemy)
 				{
 					var newPosition = 0;
-					for (int j=0; j<=cat.Speed && cat.Position + j <= GameplayUtility.Length; j++)
+					for (int j=0; j<=cat.Speed; j++)
 					{
 						newPosition = cat.Position + j;
-						if(cats.Any(otherCat => otherCat.Position >= newPosition + 1 && otherCat.Position <= newPosition + cat.Range))
+						if(cats.Any(otherCat => otherCat.Position == newPosition + 1))
+						{
+							break;
+						}
+						
+						if(cats.Any(otherCat => otherCat.IsEnemy != cat.IsEnemy && newPosition + 1 <= otherCat.Position && otherCat.Position <= newPosition + cat.Range))
 						{
 							break;
 						}
@@ -186,10 +208,15 @@ namespace Gameplay
 				} else 
 				{
 					var newPosition = 0;
-					for (int j=0; j<=cat.Speed && cat.Position - j >= 0; j++)
+					for (int j=0; j<=cat.Speed; j++)
 					{
 						newPosition = cat.Position - j;
-						if(cats.Any(otherCat => otherCat.Position <= newPosition - 1 && otherCat.Position >= newPosition - cat.Range))
+						if(cats.Any(otherCat => otherCat.Position == newPosition - 1))
+						{
+							break;
+						}
+						
+						if(cats.Any(otherCat => otherCat.IsEnemy != cat.IsEnemy && newPosition - 1 >= otherCat.Position && otherCat.Position >= newPosition - cat.Range))
 						{
 							break;
 						}
@@ -228,46 +255,73 @@ namespace Gameplay
 				}
 			}
 			
+			if (cats.All(otherCat => otherCat.Position != 0))
+			{
+				UnityEngine.Debug.LogError(second);
+				_timelines
+					.FirstOrNone(timeline => timeline.Second == second)
+					.MatchSome(timeline => 
+					{
+						switch(timeline.CatType)
+						{
+							case CatType.Archer:
+								cats.Add(new CatProperty(catId++, CatType.Archer, true, 0, 1, 1, 3, 10));
+								break;
+							case CatType.Warrior:
+								cats.Add(new CatProperty(catId++, CatType.Warrior, true, 0, 4, 1, 5, 1));
+								break;
+							case CatType.Mage:
+								cats.Add(new CatProperty(catId++, CatType.Mage, true, 0, 2, 2, 3, 5));
+								break;
+							case CatType.Tank:
+								cats.Add(new CatProperty(catId++, CatType.Tank, true, 0, 10, 1, 6, 1));
+								break;
+							case CatType.Gun:
+								cats.Add(new CatProperty(catId++, CatType.Tank, true, 0, 3, 2, 1, 10));
+								break;
+							case CatType.Wizard:
+								cats.Add(new CatProperty(catId++,CatType.Wizard, true, 0, 2, 3, 3, 5));
+								break;
+						}
+					});
+			}
+			
 			_prop = _prop with 
 			{
-				Cats = cats
+				Cats = cats.Where(cat => cat.HP > 0).ToList()
 			};
 		}
 		
-		int catId = 3;
+		int catId = 0;
 		private void _UseCard(CardProperty card)
 		{
 			switch(card.CardType)
 			{
 				case CardType.Archer:
-					_prop.Cats.Add(new CatProperty(catId++, "Cat", false, GameplayUtility.Length, 39, 5, 2, 1));
+					_prop.Cats.Add(new CatProperty(catId++, CatType.Archer, false, GameplayUtility.Length, 1, 1, 3, 10));
 					break;
 				case CardType.Warrior:
-					_prop.Cats.Add(new CatProperty(catId++, "Cat", false, GameplayUtility.Length, 39, 5, 2, 1));
+					_prop.Cats.Add(new CatProperty(catId++, CatType.Warrior, false, GameplayUtility.Length, 4, 1, 5, 1));
 					break;
 				case CardType.Mage:
-					_prop.Cats.Add(new CatProperty(catId++, "Cat", false, GameplayUtility.Length, 39, 5, 2, 1));
+					_prop.Cats.Add(new CatProperty(catId++, CatType.Mage, false, GameplayUtility.Length, 2, 2, 3, 5));
 					break;
 				case CardType.Tank:
-					_prop.Cats.Add(new CatProperty(catId++, "Cat", false, GameplayUtility.Length, 39, 5, 2, 1));
+					_prop.Cats.Add(new CatProperty(catId++, CatType.Tank, false, GameplayUtility.Length, 10, 1, 6, 1));
 					break;
 				case CardType.Gun:
-					_prop.Cats.Add(new CatProperty(catId++, "Cat", false, GameplayUtility.Length, 39, 5, 2, 1));
+					_prop.Cats.Add(new CatProperty(catId++, CatType.Tank, false, GameplayUtility.Length, 3, 2, 1, 10));
 					break;
 				case CardType.Wizard:
-					_prop.Cats.Add(new CatProperty(catId++, "Cat", false, GameplayUtility.Length, 39, 5, 2, 1));
+					_prop.Cats.Add(new CatProperty(catId++,CatType.Wizard, false, GameplayUtility.Length, 2, 3, 3, 5));
 					break;
 				case CardType.DoubleDamage:
-					_prop.Cats.Add(new CatProperty(catId++, "Cat", false, GameplayUtility.Length, 39, 5, 2, 1));
 					break;
 				case CardType.MaxHealth:
-					_prop.Cats.Add(new CatProperty(catId++, "Cat", false, GameplayUtility.Length, 39, 5, 2, 1));
 					break;
 				case CardType.FireCard:
-					_prop.Cats.Add(new CatProperty(catId++, "Cat", false, GameplayUtility.Length, 39, 5, 2, 1));
 					break;
 				case CardType.FreezingCard:
-					_prop.Cats.Add(new CatProperty(catId++, "Cat", false, GameplayUtility.Length, 39, 5, 2, 1));
 					break;
 			}
 		}
