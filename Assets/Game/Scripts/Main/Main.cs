@@ -17,9 +17,9 @@ namespace Main
 		private IGameplayPresenter _gameplayPresenter;
 
 		[Zenject.Inject]
-		public void Zenject()
+		public void Zenject(IGameplayPresenter gameplayPresenter)
 		{
-			
+			_gameplayPresenter = gameplayPresenter;
 		}
 
 		void Start()
@@ -32,15 +32,8 @@ namespace Main
 			var prop = new MainProperty(new MainState.Gameplay());
 			while (prop.State is not MainState.Close)
 			{
-				await _GetCurrentSubTabUniTask(prop.State);
+				await _gameplayPresenter.Run();
 			}
 		}
-
-		private UniTask _GetCurrentSubTabUniTask(MainState type)
-			=> type switch
-			{
-				MainState.Gameplay => _gameplayPresenter.Run(),
-				_ => throw new System.NotImplementedException(),
-			};
 	}
 }

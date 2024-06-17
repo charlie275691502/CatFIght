@@ -1,4 +1,6 @@
 using System;
+using System.Diagnostics;
+using Codice.CM.Client.Differences.Merge;
 using Cysharp.Threading.Tasks;
 using Summary;
 
@@ -47,7 +49,7 @@ namespace Gameplay
 		{
 			_prop = new GameplayProperty(new GameplayState.Open());
 			var ret = new GameplaySubTabReturn(new GameplaySubTabReturnType.Close());
-
+			
 			while (_prop.State is not GameplayState.Close)
 			{
 				_view.Render(_prop);

@@ -26,11 +26,11 @@ namespace Main
 				.Bind<IGameplayPresenter>()
 				.To<GameplayPresenter>()
 				.AsSingle();
-				
 			Container
 				.Bind<IGameplayView>()
 				.To<GameplayView>()
 				.FromInstance(_gameplayView);
+				
 			Container
 				.Bind<IBattleView>()
 				.To<BattleView>()

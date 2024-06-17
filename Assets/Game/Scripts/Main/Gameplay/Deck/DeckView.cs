@@ -15,8 +15,6 @@ namespace Deck
 	public class DeckView : MonoBehaviour, IDeckView
 	{
 		[SerializeField]
-		private GameObject _panel;
-		[SerializeField]
 		private Button _button;
 
 		private Action _onConfirm;
@@ -37,16 +35,6 @@ namespace Deck
 			_prop = prop;
 			
 			_Render(prop);
-		}
-
-		private void _Open()
-		{
-			_panel.SetActive(true);
-		}
-
-		private void _Close()
-		{
-			_panel.SetActive(false);
 		}
 
 		private void _Render(DeckProperty prop)
