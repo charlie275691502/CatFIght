@@ -1,31 +1,19 @@
 fileFormatVersion: 2
-guid: d7d09d0a67f17a340b390b81b44385a9
+guid: ca4bf98e7b4a0ea44a9e987f1b546017
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5079580848754925039
-    second: char_a_p1_0bas_humn_v02_0
+      213: -7798467165351094156
+    second: cat_mage_spritesheet_attack_0
   - first:
-      213: 2264734269934712736
-    second: char_a_p1_0bas_humn_v02_1
+      213: -7041662251224248836
+    second: cat_mage_spritesheet_attack_1
   - first:
-      213: 241678848608404492
-    second: char_a_p1_0bas_humn_v02_2
+      213: 2961111756392673667
+    second: cat_mage_spritesheet_attack_2
   - first:
-      213: -2290926974890090089
-    second: char_a_p1_0bas_humn_v02_3
-  - first:
-      213: -9156208081670682326
-    second: char_a_p1_0bas_humn_v02_4
-  - first:
-      213: -953664375107630018
-    second: char_a_p1_0bas_humn_v02_5
-  - first:
-      213: -433775389826374570
-    second: char_a_p1_0bas_humn_v02_6
-  - first:
-      213: 5393942770891386686
-    second: char_a_p1_0bas_humn_v02_7
+      213: 5006818756831114328
+    second: cat_mage_spritesheet_attack_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -58,7 +46,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -118,7 +106,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: WebGL
+    buildTarget: Android
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -144,20 +132,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: Android
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WindowsStoreApps
+    buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -173,13 +148,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: char_a_p1_0bas_humn_v02_0
+      name: cat_mage_spritesheet_attack_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 6
-        width: 64
-        height: 64
+        x: 41
+        y: 33
+        width: 118
+        height: 167
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -188,20 +163,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: fed1ae18edb4e7640800000000000000
-      internalID: 5079580848754925039
+      spriteID: 47853b06e6746c390800000000000000
+      internalID: -7798467165351094156
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: char_a_p1_0bas_humn_v02_1
+      name: cat_mage_spritesheet_attack_1
       rect:
         serializedVersion: 2
-        x: 64
-        y: 6
-        width: 64
-        height: 64
+        x: 242
+        y: 33
+        width: 117
+        height: 165
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -210,20 +185,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0a7bc16c1d3fd6f10800000000000000
-      internalID: 2264734269934712736
+      spriteID: cfd4087ad7df64e90800000000000000
+      internalID: -7041662251224248836
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: char_a_p1_0bas_humn_v02_2
+      name: cat_mage_spritesheet_attack_2
       rect:
         serializedVersion: 2
-        x: 128
-        y: 6
-        width: 64
-        height: 64
+        x: 442
+        y: 33
+        width: 117
+        height: 167
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -232,20 +207,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c048701e1ad9a5300800000000000000
-      internalID: 241678848608404492
+      spriteID: 381b40c247bf71920800000000000000
+      internalID: 2961111756392673667
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: char_a_p1_0bas_humn_v02_3
+      name: cat_mage_spritesheet_attack_3
       rect:
         serializedVersion: 2
-        x: 192
-        y: 6
-        width: 64
-        height: 64
+        x: 642
+        y: 33
+        width: 117
+        height: 167
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -254,96 +229,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 791e05fdd0ef430e0800000000000000
-      internalID: -2290926974890090089
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: char_a_p1_0bas_humn_v02_4
-      rect:
-        serializedVersion: 2
-        x: 256
-        y: 6
-        width: 64
-        height: 64
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: a29457ae24d9ee080800000000000000
-      internalID: -9156208081670682326
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: char_a_p1_0bas_humn_v02_5
-      rect:
-        serializedVersion: 2
-        x: 320
-        y: 6
-        width: 64
-        height: 64
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: e3cc3c6bd47e3c2f0800000000000000
-      internalID: -953664375107630018
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: char_a_p1_0bas_humn_v02_6
-      rect:
-        serializedVersion: 2
-        x: 384
-        y: 6
-        width: 64
-        height: 64
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 654a719c49beaf9f0800000000000000
-      internalID: -433775389826374570
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: char_a_p1_0bas_humn_v02_7
-      rect:
-        serializedVersion: 2
-        x: 448
-        y: 6
-        width: 64
-        height: 64
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: e3f64cd2f522bda40800000000000000
-      internalID: 5393942770891386686
+      spriteID: 8547eafc12bcb7540800000000000000
+      internalID: 5006818756831114328
       vertices: []
       indices: 
       edges: []
@@ -352,7 +239,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: a17c268422b12df49b5fe39121dc3360
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -360,14 +247,10 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      char_a_p1_0bas_humn_v02_0: 5079580848754925039
-      char_a_p1_0bas_humn_v02_1: 2264734269934712736
-      char_a_p1_0bas_humn_v02_2: 241678848608404492
-      char_a_p1_0bas_humn_v02_3: -2290926974890090089
-      char_a_p1_0bas_humn_v02_4: -9156208081670682326
-      char_a_p1_0bas_humn_v02_5: -953664375107630018
-      char_a_p1_0bas_humn_v02_6: -433775389826374570
-      char_a_p1_0bas_humn_v02_7: 5393942770891386686
+      cat_mage_spritesheet_attack_0: -7798467165351094156
+      cat_mage_spritesheet_attack_1: -7041662251224248836
+      cat_mage_spritesheet_attack_2: 2961111756392673667
+      cat_mage_spritesheet_attack_3: 5006818756831114328
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
