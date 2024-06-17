@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace Gameplay
 {
-	public record CatProperty(int Id, string CharacterId, bool IsEnemy, int Position, int HP);
+	public record CatProperty(int Id, string CharacterId, bool IsEnemy, int Position, int HP, int ATK, int Speed, int Range);
 
 	public class CatView : MonoBehaviour
 	{
@@ -13,9 +13,16 @@ namespace Gameplay
 		[SerializeField]
 		private Transform _character;
 		[SerializeField]
+		private Animator _animator;
+		[SerializeField]
 		private Text _health;
 
 		private CatProperty _prop;
+		
+		public void Init()
+		{
+			// _animator.Play();
+		}
 
 		public void Render(CatProperty prop)
 		{
@@ -28,7 +35,9 @@ namespace Gameplay
 
 		private void _Render(CatProperty prop)
 		{
-			_character.localScale = new Vector2((prop.IsEnemy ? -100 : 100), 100);
+			gameObject.SetActive(true);
+			
+			_character.localScale = new Vector2(prop.IsEnemy ? 100 : -100, 100);
 			transform.localPosition = new Vector2((prop.Position - Length / 2) * 500f / 15f, 0);
 			_health.text = prop.HP.ToString();
 		}
