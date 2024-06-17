@@ -8,8 +8,6 @@ namespace Gameplay
 
 	public class CatView : MonoBehaviour
 	{
-		public const int Length = 30;
-		
 		[SerializeField]
 		private Transform _character;
 		[SerializeField]
@@ -38,7 +36,7 @@ namespace Gameplay
 			gameObject.SetActive(true);
 			
 			_character.localScale = new Vector2(prop.IsEnemy ? 100 : -100, 100);
-			transform.localPosition = new Vector2((prop.Position - Length / 2) * 500f / 15f, 0);
+			transform.localPosition = new Vector2((prop.Position - GameplayUtility.Length / 2) * 1500f / GameplayUtility.Length, 0);
 			_health.text = prop.HP.ToString();
 		}
 	}

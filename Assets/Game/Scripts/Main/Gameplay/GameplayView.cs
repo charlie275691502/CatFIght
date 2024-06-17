@@ -8,7 +8,7 @@ namespace Gameplay
 {
 	public interface IGameplayView
 	{
-		void RegisterCallback(IBattleView battleView, IDeckView deckView, Action onConfirm);
+		void RegisterCallback(IBattleView battleView, IDeckView deckView, Action<int> onClickCard);
 		void Render(GameplayProperty prop);
 	}
 
@@ -19,19 +19,17 @@ namespace Gameplay
 		[SerializeField]
 		private Button _button;
 
-		private Action _onConfirm;
-
 		private GameplayProperty _prop;
 		private IBattleView _battleView;
 		private IDeckView _deckView;
 
-		void IGameplayView.RegisterCallback(IBattleView battleView, IDeckView deckView, Action onConfirm)
+		void IGameplayView.RegisterCallback(IBattleView battleView, IDeckView deckView, Action<int> onClickCard)
 		{
-			_onConfirm = onConfirm;
 			_battleView = battleView;
 			_deckView = deckView;
-
-			_button.onClick.AddListener(_OnConfirm);
+			
+			_battleView.RegisterCallback();
+			_deckView.RegisterCallback(onClickCard);
 		}
 
 		void IGameplayView.Render(GameplayProperty prop)
@@ -47,7 +45,8 @@ namespace Gameplay
 					break;
 
 				case GameplayState.Idle:
-				case GameplayState.Confirm:
+				case GameplayState.OnClickCard:
+				case GameplayState.Summary:
 					_Render(prop);
 					break;
 
@@ -74,11 +73,6 @@ namespace Gameplay
 		{
 			_battleView.Render(prop);
 			_deckView.Render(prop);
-		}
-
-		private void _OnConfirm()
-		{
-			_onConfirm?.Invoke();
 		}
 	}
 }

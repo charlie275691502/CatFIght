@@ -10,6 +10,7 @@ using Common;
 using Cysharp.Threading.Tasks;
 using Deck;
 using Optional.Collections;
+using PlasticGui.Configuration.OAuth;
 using Summary;
 using UnityEngine;
 
@@ -24,17 +25,22 @@ namespace Gameplay
 	{
 		public record Open() : GameplayState;
 		public record Idle() : GameplayState;
-		public record Confirm() : GameplayState;
+		public record OnClickCard(int Index) : GameplayState;
 		public record Summary() : GameplayState;
 		public record Close() : GameplayState;
 	}
 
-	public record GameplayProperty(GameplayState State, List<CatProperty> Cats);
+	public record GameplayProperty(GameplayState State, List<CatProperty> Cats, List<CardProperty> HandCards, List<CardProperty> DrawCards, List<CardProperty> GraveCards, float DrawCardsRemainingTime);
 	public record GameplaySubTabReturn(GameplaySubTabReturnType Type);
 	
 	public interface IGameplayPresenter
 	{
 		UniTask Run();
+	}
+	
+	public static class GameplayUtility
+	{
+		public const int Length = 50;
 	}
 
 	public class GameplayPresenter : IGameplayPresenter
@@ -43,8 +49,6 @@ namespace Gameplay
 
 		private GameplayProperty _prop;
 		private ISummaryPresenter _summaryPresenter;
-
-		public const int Length = 30;
 		
 		public GameplayPresenter(IGameplayView view, IBattleView battleView, IDeckView deckView, ISummaryPresenter summaryPresenter)
 		{
@@ -54,16 +58,34 @@ namespace Gameplay
 			_view.RegisterCallback(
 				battleView,
 				deckView,
-				() =>
-					_ChangeStateIfIdle(new GameplayState.Confirm()));
+				(index) =>
+					_ChangeStateIfIdle(new GameplayState.OnClickCard(index)));
 		}
 
 		async UniTask IGameplayPresenter.Run()
 		{
-			_prop = new GameplayProperty(new GameplayState.Open(), new List<CatProperty>(){ new CatProperty(1, "Cat", true, 11, 39, 5, 1, 1), new CatProperty(2, "Cat", false, 17, 39, 5, 2, 1) });
+			_prop = new GameplayProperty(
+				new GameplayState.Open(), 
+				new List<CatProperty>(){ },
+				new List<CardProperty>(){ },
+				new List<CardProperty>(){ 
+					new CardProperty(CardType.Warrior),
+					new CardProperty(CardType.Warrior),
+					new CardProperty(CardType.Warrior),
+					new CardProperty(CardType.Archer),
+					new CardProperty(CardType.Archer),
+					new CardProperty(CardType.Archer),
+					new CardProperty(CardType.Mage),
+					new CardProperty(CardType.Mage),
+					new CardProperty(CardType.DoubleDamage),
+					new CardProperty(CardType.FireCard),
+				},
+				new List<CardProperty>(){ },
+				card_time_threshold);
 			
 			while (_prop.State is not GameplayState.Close)
 			{
+				_TryUpdateCard();
 				_TryUpdateBattle();
 				_view.Render(_prop);
 				switch (_prop.State)
@@ -75,8 +97,14 @@ namespace Gameplay
 					case GameplayState.Idle:
 						break;
 
-					case GameplayState.Confirm info:
-						_prop = _prop with { State = new GameplayState.Close() };
+					case GameplayState.OnClickCard Info:
+						if (!_prop.Cats.Any(cat => cat.Position == GameplayUtility.Length))
+						{
+							_UseCard(_prop.HandCards[Info.Index]);
+							_prop.GraveCards.Add(_prop.HandCards[Info.Index]);
+							_prop.HandCards.RemoveAt(Info.Index);
+						}
+						_prop = _prop with { State = new GameplayState.Idle() };
 						break;
 						
 					case GameplayState.Summary:
@@ -104,16 +132,37 @@ namespace Gameplay
 			_prop = _prop with { State = targetState };
 		}
 		
-		float time = 0f;
-		float time_threshold = 1f;
+		float battle_time = 0f;
+		float battle_time_threshold = 1f;
 		private void _TryUpdateBattle()
 		{
-			time += UnityEngine.Time.deltaTime;
-			if (time >= time_threshold)
+			battle_time += UnityEngine.Time.deltaTime;
+			if (battle_time >= battle_time_threshold)
 			{
 				_UpdateBattle();
-				time = 0f;
+				battle_time = 0f;
 			}
+		}
+		
+		float card_time_threshold = 5f;
+		private void _TryUpdateCard()
+		{
+			_prop = _prop with {
+				DrawCardsRemainingTime = _prop.DrawCardsRemainingTime - UnityEngine.Time.deltaTime
+			};
+			
+			if (_prop.DrawCardsRemainingTime < 0)
+			{
+				_UpdateCard();
+				_prop = _prop with {
+					DrawCardsRemainingTime = 5f
+				};
+			}
+		}
+		
+		private void _UpdateCard()
+		{
+			_prop.HandCards.Add(_prop.DrawCards[UnityEngine.Random.Range(0, _prop.DrawCards.Count())]);
 		}
 		
 		private void _UpdateBattle()
@@ -125,7 +174,7 @@ namespace Gameplay
 				if (cat.IsEnemy)
 				{
 					var newPosition = 0;
-					for (int j=0; j<=cat.Speed; j++)
+					for (int j=0; j<=cat.Speed && cat.Position + j <= GameplayUtility.Length; j++)
 					{
 						newPosition = cat.Position + j;
 						if(cats.Any(otherCat => otherCat.Position >= newPosition + 1 && otherCat.Position <= newPosition + cat.Range))
@@ -137,7 +186,7 @@ namespace Gameplay
 				} else 
 				{
 					var newPosition = 0;
-					for (int j=0; j<=cat.Speed; j++)
+					for (int j=0; j<=cat.Speed && cat.Position - j >= 0; j++)
 					{
 						newPosition = cat.Position - j;
 						if(cats.Any(otherCat => otherCat.Position <= newPosition - 1 && otherCat.Position >= newPosition - cat.Range))
@@ -183,6 +232,44 @@ namespace Gameplay
 			{
 				Cats = cats
 			};
+		}
+		
+		int catId = 3;
+		private void _UseCard(CardProperty card)
+		{
+			switch(card.CardType)
+			{
+				case CardType.Archer:
+					_prop.Cats.Add(new CatProperty(catId++, "Cat", false, GameplayUtility.Length, 39, 5, 2, 1));
+					break;
+				case CardType.Warrior:
+					_prop.Cats.Add(new CatProperty(catId++, "Cat", false, GameplayUtility.Length, 39, 5, 2, 1));
+					break;
+				case CardType.Mage:
+					_prop.Cats.Add(new CatProperty(catId++, "Cat", false, GameplayUtility.Length, 39, 5, 2, 1));
+					break;
+				case CardType.Tank:
+					_prop.Cats.Add(new CatProperty(catId++, "Cat", false, GameplayUtility.Length, 39, 5, 2, 1));
+					break;
+				case CardType.Gun:
+					_prop.Cats.Add(new CatProperty(catId++, "Cat", false, GameplayUtility.Length, 39, 5, 2, 1));
+					break;
+				case CardType.Wizard:
+					_prop.Cats.Add(new CatProperty(catId++, "Cat", false, GameplayUtility.Length, 39, 5, 2, 1));
+					break;
+				case CardType.DoubleDamage:
+					_prop.Cats.Add(new CatProperty(catId++, "Cat", false, GameplayUtility.Length, 39, 5, 2, 1));
+					break;
+				case CardType.MaxHealth:
+					_prop.Cats.Add(new CatProperty(catId++, "Cat", false, GameplayUtility.Length, 39, 5, 2, 1));
+					break;
+				case CardType.FireCard:
+					_prop.Cats.Add(new CatProperty(catId++, "Cat", false, GameplayUtility.Length, 39, 5, 2, 1));
+					break;
+				case CardType.FreezingCard:
+					_prop.Cats.Add(new CatProperty(catId++, "Cat", false, GameplayUtility.Length, 39, 5, 2, 1));
+					break;
+			}
 		}
 	}
 }

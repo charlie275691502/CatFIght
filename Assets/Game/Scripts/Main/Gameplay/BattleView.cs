@@ -10,27 +10,20 @@ namespace Battle
 {
 	public interface IBattleView
 	{
-		void RegisterCallback(Action onConfirm);
+		void RegisterCallback();
 		void Render(GameplayProperty prop);
 	}
 
 	public class BattleView : MonoBehaviour, IBattleView
 	{
 		[SerializeField]
-		private Button _button;
-		[SerializeField]
 		private GameObjectPool _pool;
-
-		private Action _onConfirm;
 
 		private GameplayProperty _prop;
 		private Dictionary<int, CatView> _catViews = new Dictionary<int, CatView>();
 
-		void IBattleView.RegisterCallback(Action onConfirm)
+		void IBattleView.RegisterCallback()
 		{
-			_onConfirm = onConfirm;
-
-			_button.onClick.AddListener(_OnConfirm);
 		}
 
 		void IBattleView.Render(GameplayProperty prop)
@@ -67,11 +60,6 @@ namespace Battle
 					_catViews.Remove(kvp.Key);
 				}
 			}
-		}
-
-		private void _OnConfirm()
-		{
-			_onConfirm?.Invoke();
 		}
 	}
 }
