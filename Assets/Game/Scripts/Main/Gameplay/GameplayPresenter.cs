@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Diagnostics;
@@ -42,6 +43,9 @@ namespace Gameplay
 	public static class GameplayUtility
 	{
 		public const int Length = 50;
+		
+		public static float GetWorldPosition(int Position)
+			=> (Position - Length / 2) * 1500f / Length;
 	}
 	
 	public class GameplayPresenter : IGameplayPresenter
@@ -52,12 +56,14 @@ namespace Gameplay
 		private ISummaryPresenter _summaryPresenter;
 		private TimelinePair[] _timelines;
 		
+		private ActionQueue _actionQueue;
 		
 		public GameplayPresenter(IGameplayView view, IBattleView battleView, IDeckView deckView, ISummaryPresenter summaryPresenter)
 		{
 			_view = view;
 			_summaryPresenter = summaryPresenter;
 
+			_actionQueue = new ActionQueue();
 			_view.RegisterCallback(
 				battleView,
 				deckView,
@@ -231,7 +237,7 @@ namespace Gameplay
 				var isAttacking = false;
 				if (cat.IsEnemy)
 				{
-					for (int j=1; j<=cat.Range; j++)
+					for (int j=1; j<=cat.Range && !isAttacking; j++)
 					{
 						for (int k=0; k<cats.Count(); k++)
 						{
@@ -239,12 +245,21 @@ namespace Gameplay
 							{
 								cats[k] = cats[k] with {HP = cats[k].HP - cats[i].ATK};
 								isAttacking = true;
+								if (cats[i].CatType == CatType.Archer)
+								{
+									UniTask.Create(() => _view.FireProjectile(ProjectileType.Arrow, cat.IsEnemy, cats[i].Position, cats[k].Position));
+								}
+								if (cats[i].CatType == CatType.Mage)
+								{
+									UniTask.Create(() => _view.FireProjectile(ProjectileType.Fireball, cat.IsEnemy, cats[i].Position, cats[k].Position));
+								}
+								break;
 							}
 						}
 					}
 				} else 
 				{
-					for (int j=1; j<=cat.Range; j++)
+					for (int j=1; j<=cat.Range && !isAttacking; j++)
 					{
 						for (int k=0; k<cats.Count(); k++)
 						{
@@ -252,6 +267,15 @@ namespace Gameplay
 							{
 								cats[k] = cats[k] with {HP = cats[k].HP - cats[i].ATK};
 								isAttacking = true;
+								if (cats[i].CatType == CatType.Archer)
+								{
+									UniTask.Create(() => _view.FireProjectile(ProjectileType.Arrow, cat.IsEnemy, cats[i].Position, cats[k].Position));
+								}
+								if (cats[i].CatType == CatType.Mage)
+								{
+									UniTask.Create(() => _view.FireProjectile(ProjectileType.Fireball, cat.IsEnemy, cats[i].Position, cats[k].Position));
+								}
+								break;
 							}
 						}
 					}
