@@ -2,15 +2,15 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Template
+namespace Gameplay
 {
-	public interface ITemplateView
+	public interface IGameplayView
 	{
 		void RegisterCallback(Action onConfirm);
-		void Render(TemplateProperty prop);
+		void Render(GameplayProperty prop);
 	}
 
-	public class TemplateView : MonoBehaviour, ITemplateView
+	public class GameplayView : MonoBehaviour, IGameplayView
 	{
 		[SerializeField]
 		private GameObject _panel;
@@ -19,16 +19,16 @@ namespace Template
 
 		private Action _onConfirm;
 
-		private TemplateProperty _prop;
+		private GameplayProperty _prop;
 
-		void ITemplateView.RegisterCallback(Action onConfirm)
+		void IGameplayView.RegisterCallback(Action onConfirm)
 		{
 			_onConfirm = onConfirm;
 
 			_button.onClick.AddListener(_OnConfirm);
 		}
 
-		void ITemplateView.Render(TemplateProperty prop)
+		void IGameplayView.Render(GameplayProperty prop)
 		{
 			if (_prop == prop)
 				return;
@@ -36,16 +36,16 @@ namespace Template
 			
 			switch (prop.State)
 			{
-				case TemplateState.Open:
+				case GameplayState.Open:
 					_Open();
 					break;
 
-				case TemplateState.Idle:
-				case TemplateState.Confirm:
+				case GameplayState.Idle:
+				case GameplayState.Confirm:
 					_Render(prop);
 					break;
 
-				case TemplateState.Close:
+				case GameplayState.Close:
 					_Close();
 					break;
 
@@ -64,7 +64,7 @@ namespace Template
 			_panel.SetActive(false);
 		}
 
-		private void _Render(TemplateProperty prop)
+		private void _Render(GameplayProperty prop)
 		{
 			
 		}

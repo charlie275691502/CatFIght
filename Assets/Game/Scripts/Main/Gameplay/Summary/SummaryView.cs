@@ -2,15 +2,15 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Template
+namespace Summary
 {
-	public interface ITemplateView
+	public interface ISummaryView
 	{
 		void RegisterCallback(Action onConfirm);
-		void Render(TemplateProperty prop);
+		void Render(SummaryProperty prop);
 	}
 
-	public class TemplateView : MonoBehaviour, ITemplateView
+	public class SummaryView : MonoBehaviour, ISummaryView
 	{
 		[SerializeField]
 		private GameObject _panel;
@@ -19,16 +19,16 @@ namespace Template
 
 		private Action _onConfirm;
 
-		private TemplateProperty _prop;
+		private SummaryProperty _prop;
 
-		void ITemplateView.RegisterCallback(Action onConfirm)
+		void ISummaryView.RegisterCallback(Action onConfirm)
 		{
 			_onConfirm = onConfirm;
 
 			_button.onClick.AddListener(_OnConfirm);
 		}
 
-		void ITemplateView.Render(TemplateProperty prop)
+		void ISummaryView.Render(SummaryProperty prop)
 		{
 			if (_prop == prop)
 				return;
@@ -36,16 +36,16 @@ namespace Template
 			
 			switch (prop.State)
 			{
-				case TemplateState.Open:
+				case SummaryState.Open:
 					_Open();
 					break;
 
-				case TemplateState.Idle:
-				case TemplateState.Confirm:
+				case SummaryState.Idle:
+				case SummaryState.Confirm:
 					_Render(prop);
 					break;
 
-				case TemplateState.Close:
+				case SummaryState.Close:
 					_Close();
 					break;
 
@@ -64,7 +64,7 @@ namespace Template
 			_panel.SetActive(false);
 		}
 
-		private void _Render(TemplateProperty prop)
+		private void _Render(SummaryProperty prop)
 		{
 			
 		}
