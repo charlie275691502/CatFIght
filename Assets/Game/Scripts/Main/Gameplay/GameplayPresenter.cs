@@ -122,7 +122,20 @@ namespace Gameplay
 						break;
 						
 					case GameplayState.Summary:
-						await _summaryPresenter.Run();
+						var new_card = await _summaryPresenter.Run();
+						_prop = _prop with 
+						{
+							State = new GameplayState.Idle(),
+							Cats = new List<CatProperty>(){ 
+								new CatProperty(catId++, CatType.Tower, true, 1, 20, 0, 0, 0, false),
+								new CatProperty(catId++, CatType.Tower, false, GameplayUtility.Length - 1, 20, 0, 0, 0, false)
+							},
+							HandCards = new List<CardProperty>(){ },
+							DrawCards = _prop.HandCards.Concat(_prop.DrawCards).Concat(_prop.GraveCards).Append(new_card).ToList(),
+							GraveCards = new List<CardProperty>(){ },
+							DrawCardsRemainingTime = card_time_threshold
+						};
+						second = 0;
 						break;
 
 					case GameplayState.Close:
@@ -344,6 +357,14 @@ namespace Gameplay
 			{
 				Cats = cats
 			};
+			
+			if (_prop.Cats.Any(cat => cat.CatType == CatType.Tower && cat.HP <= 0 && cat.IsEnemy))
+			{
+				_prop = _prop with 
+				{
+					State = new GameplayState.Summary()
+				};
+			}
 		}
 		
 		int catId = 0;

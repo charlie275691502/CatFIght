@@ -1,4 +1,7 @@
 using System;
+using System.Linq;
+using Common.LinqExtension;
+using Gameplay;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,7 +9,7 @@ namespace Summary
 {
 	public interface ISummaryView
 	{
-		void RegisterCallback(Action onConfirm);
+		void RegisterCallback(Action<int> onClickCard);
 		void Render(SummaryProperty prop);
 	}
 
@@ -15,17 +18,13 @@ namespace Summary
 		[SerializeField]
 		private GameObject _panel;
 		[SerializeField]
-		private Button _button;
-
-		private Action _onConfirm;
+		private CardView[] _cards;
 
 		private SummaryProperty _prop;
 
-		void ISummaryView.RegisterCallback(Action onConfirm)
+		void ISummaryView.RegisterCallback(Action<int> onClickCard)
 		{
-			_onConfirm = onConfirm;
-
-			_button.onClick.AddListener(_OnConfirm);
+			_cards.ForEach((view, index) => view.Show(() => onClickCard?.Invoke(index)));
 		}
 
 		void ISummaryView.Render(SummaryProperty prop)
@@ -41,7 +40,7 @@ namespace Summary
 					break;
 
 				case SummaryState.Idle:
-				case SummaryState.Confirm:
+				case SummaryState.OnClickCard:
 					_Render(prop);
 					break;
 
@@ -66,12 +65,8 @@ namespace Summary
 
 		private void _Render(SummaryProperty prop)
 		{
-			
-		}
-
-		private void _OnConfirm()
-		{
-			_onConfirm?.Invoke();
+			_cards.ZipForEach(prop.Cards,
+				(view, viewData) => view.Render(viewData));
 		}
 	}
 }
