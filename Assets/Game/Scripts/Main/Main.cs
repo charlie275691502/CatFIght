@@ -1,6 +1,8 @@
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 using Gameplay;
+using System.Collections.Generic;
+using System;
 
 namespace Main
 {
@@ -12,9 +14,19 @@ namespace Main
 
 	public record MainProperty(MainState State);
 
+	[Serializable]
+	public class TimelinePair
+	{
+		public int Second;
+		public CatType CatType;
+	}
+
 	public class Main : MonoBehaviour
 	{
 		private IGameplayPresenter _gameplayPresenter;
+		
+		[SerializeField]
+		private TimelinePair[] _timeline;
 
 		[Zenject.Inject]
 		public void Zenject(IGameplayPresenter gameplayPresenter)
@@ -32,7 +44,7 @@ namespace Main
 			var prop = new MainProperty(new MainState.Gameplay());
 			while (prop.State is not MainState.Close)
 			{
-				await _gameplayPresenter.Run();
+				await _gameplayPresenter.Run(_timeline);
 			}
 		}
 	}
