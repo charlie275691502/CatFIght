@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: a0551e77540363242b4c23c773eb7c56
+guid: 4e58f269bc2460d4f9aabc343bef2353
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 6049605792901559095
-    second: Water_0
+      213: -5144238022852969543
+    second: Egg_item_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,7 +100,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Water_0
+      name: Egg_item_0
       rect:
         serializedVersion: 2
         x: 0
@@ -113,76 +113,10 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 412b414c284edac4fab5027dc0a039d6
-      internalID: -1108306079
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Water_1
-      rect:
-        serializedVersion: 2
-        x: 16
-        y: 0
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: aa40bcf063593a141bf3f9adf3410cf3
-      internalID: -1410526706
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Water_2
-      rect:
-        serializedVersion: 2
-        x: 32
-        y: 0
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 670bb2190dc7ed34882855d5b728e258
-      internalID: -808225475
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Water_3
-      rect:
-        serializedVersion: 2
-        x: 48
-        y: 0
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: cb6979213250dd342a3ef2cb7a690040
-      internalID: -1626268182
+      spriteID: 9bb7ac706cefb98b0800000000000000
+      internalID: -5144238022852969543
       vertices: []
       indices: 
       edges: []
@@ -191,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 2b882c25e70591642bd90750d2fbd86a
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -199,10 +133,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Water_0: -1108306079
-      Water_1: -1410526706
-      Water_2: -808225475
-      Water_3: -1626268182
+      Egg_item_0: -5144238022852969543
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

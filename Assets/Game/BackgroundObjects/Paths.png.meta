@@ -1,10 +1,31 @@
 fileFormatVersion: 2
-guid: a0551e77540363242b4c23c773eb7c56
+guid: 48b85607cf92e37498a1ea375eef1d98
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 6049605792901559095
-    second: Water_0
+      213: -3975216232760467619
+    second: Paths_0
+  - first:
+      213: -1571907141483303039
+    second: Paths_1
+  - first:
+      213: 4341512326976455624
+    second: Paths_2
+  - first:
+      213: -8907765607471424367
+    second: Paths_3
+  - first:
+      213: 8795567671476409454
+    second: Paths_4
+  - first:
+      213: -82048364263676023
+    second: Paths_5
+  - first:
+      213: -3197776780982355621
+    second: Paths_6
+  - first:
+      213: -6216437916036447127
+    second: Paths_7
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +72,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 15
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -100,89 +121,177 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Water_0
+      name: Paths_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
-        width: 16
-        height: 16
+        y: 20
+        width: 32
+        height: 41
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 412b414c284edac4fab5027dc0a039d6
-      internalID: -1108306079
+      spriteID: d5f12fcd5e135d8c0800000000000000
+      internalID: -3975216232760467619
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Water_1
+      name: Paths_1
       rect:
         serializedVersion: 2
-        x: 16
-        y: 0
-        width: 16
-        height: 16
+        x: 18
+        y: 32
+        width: 10
+        height: 7
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: aa40bcf063593a141bf3f9adf3410cf3
-      internalID: -1410526706
+      spriteID: 18fecfb78c67f2ae0800000000000000
+      internalID: -1571907141483303039
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Water_2
+      name: Paths_2
       rect:
         serializedVersion: 2
-        x: 32
-        y: 0
-        width: 16
-        height: 16
+        x: 31
+        y: 36
+        width: 7
+        height: 11
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 670bb2190dc7ed34882855d5b728e258
-      internalID: -808225475
+      spriteID: 8c349658576204c30800000000000000
+      internalID: 4341512326976455624
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Water_3
+      name: Paths_3
       rect:
         serializedVersion: 2
-        x: 48
-        y: 0
-        width: 16
-        height: 16
+        x: 33
+        y: 32
+        width: 11
+        height: 8
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: cb6979213250dd342a3ef2cb7a690040
-      internalID: -1626268182
+      spriteID: 19c59381062416480800000000000000
+      internalID: -8907765607471424367
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Paths_4
+      rect:
+        serializedVersion: 2
+        x: 19
+        y: 25
+        width: 11
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e64d2404232201a70800000000000000
+      internalID: 8795567671476409454
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Paths_5
+      rect:
+        serializedVersion: 2
+        x: 19
+        y: 1
+        width: 17
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 98769a982718cdef0800000000000000
+      internalID: -82048364263676023
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Paths_6
+      rect:
+        serializedVersion: 2
+        x: 31
+        y: 20
+        width: 8
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b59fd82d5f63f93d0800000000000000
+      internalID: -3197776780982355621
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Paths_7
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 0
+        width: 25
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 964c066c6a6cab9a0800000000000000
+      internalID: -6216437916036447127
       vertices: []
       indices: 
       edges: []
@@ -191,18 +300,14 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 2b882c25e70591642bd90750d2fbd86a
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable:
-      Water_0: -1108306079
-      Water_1: -1410526706
-      Water_2: -808225475
-      Water_3: -1626268182
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

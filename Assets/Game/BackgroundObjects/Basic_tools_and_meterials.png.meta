@@ -1,10 +1,25 @@
 fileFormatVersion: 2
-guid: a0551e77540363242b4c23c773eb7c56
+guid: b7f5b313de6002b438a5d4cf0d0a1746
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 6049605792901559095
-    second: Water_0
+      213: -6987332668960274312
+    second: Basic_tools_and_meterials_0
+  - first:
+      213: -7773870562576252253
+    second: Basic_tools_and_meterials_1
+  - first:
+      213: 5827638716017627413
+    second: Basic_tools_and_meterials_2
+  - first:
+      213: 6239689603595155940
+    second: Basic_tools_and_meterials_3
+  - first:
+      213: 716657169334937913
+    second: Basic_tools_and_meterials_4
+  - first:
+      213: 6134250156721728216
+    second: Basic_tools_and_meterials_5
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,34 +115,100 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Water_0
+      name: Basic_tools_and_meterials_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 17
+        width: 17
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 878042345f1080f90800000000000000
+      internalID: -6987332668960274312
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic_tools_and_meterials_1
+      rect:
+        serializedVersion: 2
+        x: 17
+        y: 15
+        width: 15
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3a2c6cb39e9ad1490800000000000000
+      internalID: -7773870562576252253
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic_tools_and_meterials_2
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 16
+        width: 15
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5115b8b398eefd050800000000000000
+      internalID: 5827638716017627413
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic_tools_and_meterials_3
       rect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 16
-        height: 16
+        height: 15
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 412b414c284edac4fab5027dc0a039d6
-      internalID: -1108306079
+      spriteID: 4e9bcfa92a4d79650800000000000000
+      internalID: 6239689603595155940
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Water_1
+      name: Basic_tools_and_meterials_4
       rect:
         serializedVersion: 2
         x: 16
         y: 0
-        width: 16
+        width: 15
         height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -135,16 +216,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: aa40bcf063593a141bf3f9adf3410cf3
-      internalID: -1410526706
+      spriteID: 93922f306e312f900800000000000000
+      internalID: 716657169334937913
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Water_2
+      name: Basic_tools_and_meterials_5
       rect:
         serializedVersion: 2
         x: 32
@@ -157,32 +238,10 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 670bb2190dc7ed34882855d5b728e258
-      internalID: -808225475
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Water_3
-      rect:
-        serializedVersion: 2
-        x: 48
-        y: 0
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: cb6979213250dd342a3ef2cb7a690040
-      internalID: -1626268182
+      spriteID: 8da68c2540c312550800000000000000
+      internalID: 6134250156721728216
       vertices: []
       indices: 
       edges: []
@@ -191,7 +250,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 2b882c25e70591642bd90750d2fbd86a
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -199,10 +258,12 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Water_0: -1108306079
-      Water_1: -1410526706
-      Water_2: -808225475
-      Water_3: -1626268182
+      Basic_tools_and_meterials_0: -6987332668960274312
+      Basic_tools_and_meterials_1: -7773870562576252253
+      Basic_tools_and_meterials_2: 5827638716017627413
+      Basic_tools_and_meterials_3: 6239689603595155940
+      Basic_tools_and_meterials_4: 716657169334937913
+      Basic_tools_and_meterials_5: 6134250156721728216
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
