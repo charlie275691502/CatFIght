@@ -2,7 +2,7 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!78 &1
 TagManager:
-  serializedVersion: 2
+  serializedVersion: 3
   tags: []
   layers:
   - Default
@@ -38,6 +38,29 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Background
+    uniqueID: 2425095951
+    locked: 0
+  - name: New Layer 2
+    uniqueID: 1240417333
+    locked: 0
+  - name: New Layer 3
+    uniqueID: 173889169
+    locked: 0
+  - name: New Layer 4
+    uniqueID: 1908648771
+    locked: 0
+  - name: New Layer 5
+    uniqueID: 776013287
+    locked: 0
+  - name: New Layer 6
+    uniqueID: 730844299
+    locked: 0
+  - name: Cats
+    uniqueID: 2229970671
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
+  m_RenderingLayers:
+  - Default
