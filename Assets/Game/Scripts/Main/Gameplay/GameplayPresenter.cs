@@ -155,7 +155,7 @@ namespace Gameplay
 							DrawCards = _prop.HandCards.Concat(_prop.DrawCards).Concat(_prop.GraveCards).Append(new_card).ToList(),
 							GraveCards = new List<CardProperty>(){ },
 							DrawCardsRemainingTime = card_time_threshold,
-							BackgroundStage = 1,
+							BackgroundStage = (_prop.BackgroundStage + 1) % 3,
 						};
 						second = 0;
 						stage += 1;
@@ -176,7 +176,6 @@ namespace Gameplay
 							DrawCards = _prop.HandCards.Concat(_prop.DrawCards).Concat(_prop.GraveCards).ToList(),
 							GraveCards = new List<CardProperty>(){ },
 							DrawCardsRemainingTime = card_time_threshold,
-							BackgroundStage = 1,
 						};
 						second = 0;
 						_DrawCard();
@@ -482,14 +481,6 @@ namespace Gameplay
 					break;
 				case CardType.DoubleDamage:{
 					_powerUpSecs[false] += 5;
-					var cats = _prop.Cats.Where(cat => cat.HP > 0).ToList();
-					for(int i=0; i<cats.Count(); i++)
-					{
-						if(cats[i].IsEnemy)
-						{
-							UniTask.Create(() => _view.FireProjectile(ProjectileType.PowerUp, true, cats[i].Position, cats[i].Position, 4.5f));
-						}
-					}
 					break;}
 				case CardType.MaxHealth:{
 					var cats = _prop.Cats.Where(cat => cat.HP > 0).ToList();
@@ -501,7 +492,6 @@ namespace Gameplay
 							{
 								HP = cats[i].HP + 2	
 							};
-							UniTask.Create(() => _view.FireProjectile(ProjectileType.Heal, false, cats[i].Position, cats[i].Position, 4.5f));
 						}
 					}
 					_prop = _prop with 
@@ -529,14 +519,6 @@ namespace Gameplay
 					break;}
 				case CardType.FreezingCard:{
 					_freezeSecs[true] += 5;
-					var cats = _prop.Cats.Where(cat => cat.HP > 0).ToList();
-					for(int i=0; i<cats.Count(); i++)
-					{
-						if(cats[i].IsEnemy)
-						{
-							UniTask.Create(() => _view.FireProjectile(ProjectileType.Ice, true, cats[i].Position, cats[i].Position, 4.5f));
-						}
-					}
 					break;}
 			}
 		}

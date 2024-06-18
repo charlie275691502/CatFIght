@@ -24,9 +24,6 @@ namespace Gameplay
 	{
 		Arrow,
 		Fireball,
-		Ice,
-		PowerUp,
-		Heal,
 	}
 	
 	[Serializable]
