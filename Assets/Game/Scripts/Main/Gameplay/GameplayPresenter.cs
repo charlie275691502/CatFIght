@@ -37,7 +37,7 @@ namespace Gameplay
 		public record Close() : GameplayState;
 	}
 
-	public record GameplayProperty(GameplayState State, List<CatProperty> Cats, List<CardProperty> HandCards, List<CardProperty> DrawCards, List<CardProperty> GraveCards, float DrawCardsRemainingTime);
+	public record GameplayProperty(GameplayState State, List<CatProperty> Cats, List<CardProperty> HandCards, List<CardProperty> DrawCards, List<CardProperty> GraveCards, float DrawCardsRemainingTime, int BackgroundStage);
 	public record GameplaySubTabReturn(GameplaySubTabReturnType Type);
 	
 	public interface IGameplayPresenter
@@ -61,18 +61,20 @@ namespace Gameplay
 		private ISummaryPresenter _summaryPresenter;
 		private IRetryPresenter _retryPresenter;
 		private IHoldingCardsPresenter _holdingCardsPresenter;
+		private IPlaySoundEffect _playSoundEffect;
 		private Stage[] _timelines;
 		
 		private ActionQueue _actionQueue;
 		private Dictionary<bool, int> _powerUpSecs = new Dictionary<bool, int>(){ {true, 0}, {false, 0} };
 		private Dictionary<bool, int> _freezeSecs = new Dictionary<bool, int>(){ {true, 0}, {false, 0} };
 		
-		public GameplayPresenter(IGameplayView view, IBattleView battleView, IDeckView deckView, ISummaryPresenter summaryPresenter, IRetryPresenter retryPresenter, IHoldingCardsPresenter holdingCardsPresenter)
+		public GameplayPresenter(IGameplayView view, IBattleView battleView, IDeckView deckView, ISummaryPresenter summaryPresenter, IRetryPresenter retryPresenter, IHoldingCardsPresenter holdingCardsPresenter, IPlaySoundEffect playSoundEffect)
 		{
 			_view = view;
 			_summaryPresenter = summaryPresenter;
 			_retryPresenter = retryPresenter;
 			_holdingCardsPresenter = holdingCardsPresenter;
+			_playSoundEffect = playSoundEffect;
 
 			_actionQueue = new ActionQueue();
 			_view.RegisterCallback(
@@ -110,7 +112,8 @@ namespace Gameplay
 					new CardProperty(CardType.FireCard),
 				},
 				new List<CardProperty>(){ },
-				card_time_threshold);
+				card_time_threshold,
+				0);
 				
 			_DrawCard();
 			_DrawCard();
@@ -151,7 +154,8 @@ namespace Gameplay
 							HandCards = new List<CardProperty>(){ },
 							DrawCards = _prop.HandCards.Concat(_prop.DrawCards).Concat(_prop.GraveCards).Append(new_card).ToList(),
 							GraveCards = new List<CardProperty>(){ },
-							DrawCardsRemainingTime = card_time_threshold
+							DrawCardsRemainingTime = card_time_threshold,
+							BackgroundStage = 1,
 						};
 						second = 0;
 						stage += 1;
@@ -171,7 +175,8 @@ namespace Gameplay
 							HandCards = new List<CardProperty>(){ },
 							DrawCards = _prop.HandCards.Concat(_prop.DrawCards).Concat(_prop.GraveCards).ToList(),
 							GraveCards = new List<CardProperty>(){ },
-							DrawCardsRemainingTime = card_time_threshold
+							DrawCardsRemainingTime = card_time_threshold,
+							BackgroundStage = 1,
 						};
 						second = 0;
 						_DrawCard();
@@ -332,6 +337,18 @@ namespace Gameplay
 							{
 								cats[k] = cats[k] with {HP = cats[k].HP - cats[i].ATK * ((_powerUpSecs[cat.IsEnemy] > 0) ? 2 : 1)};
 								isAttacking = true;
+								if (cats[i].CatType == CatType.Archer)
+								{
+									_playSoundEffect.PlaySound("archer");
+								}
+								if (cats[i].CatType == CatType.Mage)
+								{
+									_playSoundEffect.PlaySound("mage");
+								}
+								if (cats[i].CatType == CatType.Warrior)
+								{
+									_playSoundEffect.PlaySound("warrior");
+								}
 								UniTask.Create(() => _view.HitEffect(cats[k].Id));
 								if (cats[i].CatType == CatType.Archer)
 								{
@@ -355,6 +372,18 @@ namespace Gameplay
 							{
 								cats[k] = cats[k] with {HP = cats[k].HP - cats[i].ATK * ((_powerUpSecs[cat.IsEnemy] > 0) ? 2 : 1)};
 								isAttacking = true;
+								if (cats[i].CatType == CatType.Archer)
+								{
+									_playSoundEffect.PlaySound("archer");
+								}
+								if (cats[i].CatType == CatType.Mage)
+								{
+									_playSoundEffect.PlaySound("mage");
+								}
+								if (cats[i].CatType == CatType.Warrior)
+								{
+									_playSoundEffect.PlaySound("warrior");
+								}
 								UniTask.Create(() => _view.HitEffect(cats[k].Id));
 								if (cats[i].CatType == CatType.Archer)
 								{
@@ -430,6 +459,7 @@ namespace Gameplay
 		int catId = 0;
 		private void _UseCard(CardProperty card)
 		{
+			_playSoundEffect.PlaySound("meow");
 			switch(card.CardType)
 			{
 				case CardType.Archer:
