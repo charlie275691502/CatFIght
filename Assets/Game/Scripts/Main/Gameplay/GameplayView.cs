@@ -46,6 +46,8 @@ namespace Gameplay
 
 		[SerializeField]
 		private ProjectilePair[] _projectiles;
+		[SerializeField]
+		private GameObject[] _backgrounds;
 
 		void IGameplayView.RegisterCallback(IBattleView battleView, IDeckView deckView, Action<int> onClickCard, Action onClickSetting)
 		{
@@ -101,6 +103,11 @@ namespace Gameplay
 		{
 			_battleView.Render(prop);
 			_deckView.Render(prop);
+			
+			for(int i=0;i <_backgrounds.Count(); i++)
+			{
+				_backgrounds[i].SetActive(i == prop.BackgroundStage);
+			}
 		}
 		
 		async UniTask IGameplayView.FireProjectile(ProjectileType type, bool isEnemy, int fromPosition, int toPosition)

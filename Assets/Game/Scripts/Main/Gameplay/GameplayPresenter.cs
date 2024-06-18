@@ -37,7 +37,7 @@ namespace Gameplay
 		public record Close() : GameplayState;
 	}
 
-	public record GameplayProperty(GameplayState State, List<CatProperty> Cats, List<CardProperty> HandCards, List<CardProperty> DrawCards, List<CardProperty> GraveCards, float DrawCardsRemainingTime);
+	public record GameplayProperty(GameplayState State, List<CatProperty> Cats, List<CardProperty> HandCards, List<CardProperty> DrawCards, List<CardProperty> GraveCards, float DrawCardsRemainingTime, int BackgroundStage);
 	public record GameplaySubTabReturn(GameplaySubTabReturnType Type);
 	
 	public interface IGameplayPresenter
@@ -112,7 +112,8 @@ namespace Gameplay
 					new CardProperty(CardType.FireCard),
 				},
 				new List<CardProperty>(){ },
-				card_time_threshold);
+				card_time_threshold,
+				0);
 				
 			_DrawCard();
 			_DrawCard();
@@ -153,7 +154,8 @@ namespace Gameplay
 							HandCards = new List<CardProperty>(){ },
 							DrawCards = _prop.HandCards.Concat(_prop.DrawCards).Concat(_prop.GraveCards).Append(new_card).ToList(),
 							GraveCards = new List<CardProperty>(){ },
-							DrawCardsRemainingTime = card_time_threshold
+							DrawCardsRemainingTime = card_time_threshold,
+							BackgroundStage = 1,
 						};
 						second = 0;
 						stage += 1;
@@ -173,7 +175,8 @@ namespace Gameplay
 							HandCards = new List<CardProperty>(){ },
 							DrawCards = _prop.HandCards.Concat(_prop.DrawCards).Concat(_prop.GraveCards).ToList(),
 							GraveCards = new List<CardProperty>(){ },
-							DrawCardsRemainingTime = card_time_threshold
+							DrawCardsRemainingTime = card_time_threshold,
+							BackgroundStage = 1,
 						};
 						second = 0;
 						_DrawCard();
