@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Common;
+using Cysharp.Threading.Tasks;
 using Gameplay;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,6 +13,7 @@ namespace Battle
 	{
 		void RegisterCallback();
 		void Render(GameplayProperty prop);
+		UniTask HitEffect(int catId);
 	}
 
 	public class BattleView : MonoBehaviour, IBattleView
@@ -60,6 +62,14 @@ namespace Battle
 					_catViews.Remove(kvp.Key);
 				}
 			}
+		}
+
+		async UniTask IBattleView.HitEffect(int catId)
+		{
+			await UniTask.WaitForSeconds(0.5f);
+			_catViews[catId].HitColor();
+			await UniTask.WaitForSeconds(0.3f);
+			_catViews[catId].NormalColor();
 		}
 	}
 }

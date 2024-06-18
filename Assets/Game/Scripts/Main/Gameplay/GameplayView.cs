@@ -17,6 +17,7 @@ namespace Gameplay
 		void RegisterCallback(IBattleView battleView, IDeckView deckView, Action<int> onClickCard);
 		void Render(GameplayProperty prop);
 		UniTask FireProjectile(ProjectileType type, bool isEnemy, int fromPosition, int toPosition);
+		UniTask HitEffect(int catId);
 	}
 	
 	public enum ProjectileType
@@ -116,6 +117,11 @@ namespace Gameplay
 				}
 				opt.ValueOrFailure().Pool.ReturnGameObject(gmo);
 			}
+		}
+
+		async UniTask IGameplayView.HitEffect(int catId)
+		{
+			await _battleView.HitEffect(catId);
 		}
 	}
 }

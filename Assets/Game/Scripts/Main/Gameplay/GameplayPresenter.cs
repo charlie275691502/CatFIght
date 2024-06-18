@@ -285,6 +285,7 @@ namespace Gameplay
 							{
 								cats[k] = cats[k] with {HP = cats[k].HP - cats[i].ATK};
 								isAttacking = true;
+								UniTask.Create(() => _view.HitEffect(cats[k].Id));
 								if (cats[i].CatType == CatType.Archer)
 								{
 									UniTask.Create(() => _view.FireProjectile(ProjectileType.Arrow, cat.IsEnemy, cats[i].Position, cats[k].Position));
@@ -307,6 +308,7 @@ namespace Gameplay
 							{
 								cats[k] = cats[k] with {HP = cats[k].HP - cats[i].ATK};
 								isAttacking = true;
+								UniTask.Create(() => _view.HitEffect(cats[k].Id));
 								if (cats[i].CatType == CatType.Archer)
 								{
 									UniTask.Create(() => _view.FireProjectile(ProjectileType.Arrow, cat.IsEnemy, cats[i].Position, cats[k].Position));

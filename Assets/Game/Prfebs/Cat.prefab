@@ -831,6 +831,15 @@ MonoBehaviour:
   - CatType: 3
     IsAttacking: 1
     GameObject: {fileID: 8790361013529333154}
+  _hitColor: {r: 1, g: 0.3160377, b: 0.3160377, a: 1}
+  _normalColor: {r: 1, g: 1, b: 1, a: 1}
+  _images:
+  - {fileID: 5278640377406208658}
+  - {fileID: 7495311805217806604}
+  - {fileID: 1200145430041967747}
+  - {fileID: 9082856669749929820}
+  - {fileID: 1432984368912594075}
+  - {fileID: 4787979526782890777}
 --- !u!1 &8790361013529333154
 GameObject:
   m_ObjectHideFlags: 0

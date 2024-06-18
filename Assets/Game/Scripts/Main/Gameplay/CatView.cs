@@ -1,4 +1,5 @@
 using System;
+using Common.LinqExtension;
 using Cysharp.Threading.Tasks.Triggers;
 using Optional.Collections;
 using Unity.VisualScripting.YamlDotNet.Core.Tokens;
@@ -38,6 +39,12 @@ namespace Gameplay
 		private Text _name;
 		[SerializeField]
 		private CatKeyPair[] _keys;
+		[SerializeField]
+		private Color _hitColor;
+		[SerializeField]
+		private Color _normalColor;
+		[SerializeField]
+		private SpriteRenderer[] _images;
 
 		private CatProperty _prop;
 	
@@ -68,6 +75,18 @@ namespace Gameplay
 			{
 				key.GameObject.SetActive(key.CatType == prop.CatType && key.IsAttacking == prop.IsAttacking);
 			}
+		}
+
+		public void HitColor()
+		{
+			foreach( var image in _images)
+				image.color = _hitColor;
+		}
+
+		public void NormalColor()
+		{
+			foreach( var image in _images)
+				image.color = _normalColor;
 		}
 	}
 }
