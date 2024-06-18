@@ -243,7 +243,9 @@ namespace Gameplay
 			}
 			if(_prop.HandCards.Count() < 5)
 			{
-				_prop.HandCards.Add(_prop.DrawCards[UnityEngine.Random.Range(0, _prop.DrawCards.Count())]);
+				var randomIndex = UnityEngine.Random.Range(0, _prop.DrawCards.Count());
+				_prop.HandCards.Add(_prop.DrawCards[randomIndex]);
+				_prop.DrawCards.RemoveAt(randomIndex);
 			}
 		}
 		
