@@ -61,18 +61,20 @@ namespace Gameplay
 		private ISummaryPresenter _summaryPresenter;
 		private IRetryPresenter _retryPresenter;
 		private IHoldingCardsPresenter _holdingCardsPresenter;
+		private IPlaySoundEffect _playSoundEffect;
 		private Stage[] _timelines;
 		
 		private ActionQueue _actionQueue;
 		private Dictionary<bool, int> _powerUpSecs = new Dictionary<bool, int>(){ {true, 0}, {false, 0} };
 		private Dictionary<bool, int> _freezeSecs = new Dictionary<bool, int>(){ {true, 0}, {false, 0} };
 		
-		public GameplayPresenter(IGameplayView view, IBattleView battleView, IDeckView deckView, ISummaryPresenter summaryPresenter, IRetryPresenter retryPresenter, IHoldingCardsPresenter holdingCardsPresenter)
+		public GameplayPresenter(IGameplayView view, IBattleView battleView, IDeckView deckView, ISummaryPresenter summaryPresenter, IRetryPresenter retryPresenter, IHoldingCardsPresenter holdingCardsPresenter, IPlaySoundEffect playSoundEffect)
 		{
 			_view = view;
 			_summaryPresenter = summaryPresenter;
 			_retryPresenter = retryPresenter;
 			_holdingCardsPresenter = holdingCardsPresenter;
+			_playSoundEffect = playSoundEffect;
 
 			_actionQueue = new ActionQueue();
 			_view.RegisterCallback(
@@ -332,6 +334,18 @@ namespace Gameplay
 							{
 								cats[k] = cats[k] with {HP = cats[k].HP - cats[i].ATK * ((_powerUpSecs[cat.IsEnemy] > 0) ? 2 : 1)};
 								isAttacking = true;
+								if (cats[i].CatType == CatType.Archer)
+								{
+									_playSoundEffect.PlaySound("archer");
+								}
+								if (cats[i].CatType == CatType.Mage)
+								{
+									_playSoundEffect.PlaySound("mage");
+								}
+								if (cats[i].CatType == CatType.Warrior)
+								{
+									_playSoundEffect.PlaySound("warrior");
+								}
 								UniTask.Create(() => _view.HitEffect(cats[k].Id));
 								if (cats[i].CatType == CatType.Archer)
 								{
@@ -355,6 +369,18 @@ namespace Gameplay
 							{
 								cats[k] = cats[k] with {HP = cats[k].HP - cats[i].ATK * ((_powerUpSecs[cat.IsEnemy] > 0) ? 2 : 1)};
 								isAttacking = true;
+								if (cats[i].CatType == CatType.Archer)
+								{
+									_playSoundEffect.PlaySound("archer");
+								}
+								if (cats[i].CatType == CatType.Mage)
+								{
+									_playSoundEffect.PlaySound("mage");
+								}
+								if (cats[i].CatType == CatType.Warrior)
+								{
+									_playSoundEffect.PlaySound("warrior");
+								}
 								UniTask.Create(() => _view.HitEffect(cats[k].Id));
 								if (cats[i].CatType == CatType.Archer)
 								{
@@ -430,6 +456,7 @@ namespace Gameplay
 		int catId = 0;
 		private void _UseCard(CardProperty card)
 		{
+			_playSoundEffect.PlaySound("meow");
 			switch(card.CardType)
 			{
 				case CardType.Archer:

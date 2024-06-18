@@ -23,9 +23,17 @@ namespace Main
 		private RetryView _retryView;
 		[SerializeField]
 		private HoldingCardsView _holdingCardsView;
+		
+		[SerializeField]
+		private PlaySoundEffect playSoundEffect;
 
 		public override void InstallBindings()
 		{
+			Container
+				.Bind<IPlaySoundEffect>()
+				.To<PlaySoundEffect>()
+				.FromInstance(playSoundEffect);
+				
 			#region Gameplay
 			
 			Container
