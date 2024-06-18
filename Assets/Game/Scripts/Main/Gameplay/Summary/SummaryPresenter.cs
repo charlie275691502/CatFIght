@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
+using Gameplay;
 
 namespace Summary
 {
@@ -12,16 +15,16 @@ namespace Summary
 	{
 		public record Open() : SummaryState;
 		public record Idle() : SummaryState;
-		public record Confirm() : SummaryState;
+		public record OnClickCard(int Index) : SummaryState;
 		public record Close() : SummaryState;
 	}
 
-	public record SummaryProperty(SummaryState State);
+	public record SummaryProperty(SummaryState State, List<CardProperty> Cards);
 	public record SummarySubTabReturn(SummarySubTabReturnType Type);
 
 	public interface ISummaryPresenter
 	{
-		UniTask<SummarySubTabReturn> Run();
+		UniTask<CardProperty> Run();
 	}
 
 	public class SummaryPresenter : ISummaryPresenter
@@ -29,20 +32,27 @@ namespace Summary
 		private ISummaryView _view;
 
 		private SummaryProperty _prop;
+		
+		private Dictionary<CardType, float> _pool = new Dictionary<CardType, float>()
+		{
+			{CardType.Archer, 1},
+			{CardType.Warrior, 3},
+			{CardType.Mage, 2},
+		};
 
 		public SummaryPresenter(ISummaryView view)
 		{
 			_view = view;
 
 			_view.RegisterCallback(
-				() =>
-					_ChangeStateIfIdle(new SummaryState.Confirm()));
+				(index) =>
+					_ChangeStateIfIdle(new SummaryState.OnClickCard(index)));
 		}
 
-		async UniTask<SummarySubTabReturn> ISummaryPresenter.Run()
+		async UniTask<CardProperty> ISummaryPresenter.Run()
 		{
-			_prop = new SummaryProperty(new SummaryState.Open());
-			var ret = new SummarySubTabReturn(new SummarySubTabReturnType.Close());
+			_prop = new SummaryProperty(new SummaryState.Open(), Enumerable.Range(0, 3).Select(_ => _SelectRandomCard()).ToList());
+			var ret = new CardProperty(CardType.Archer);
 
 			while (_prop.State is not SummaryState.Close)
 			{
@@ -56,7 +66,8 @@ namespace Summary
 					case SummaryState.Idle:
 						break;
 
-					case SummaryState.Confirm Info:
+					case SummaryState.OnClickCard Info:
+						ret = _prop.Cards[Info.Index];
 						_prop = _prop with { State = new SummaryState.Close() };
 						break;
 
@@ -80,6 +91,23 @@ namespace Summary
 
 			onChangeStateSuccess?.Invoke();
 			_prop = _prop with { State = targetState };
+		}
+
+		private CardProperty _SelectRandomCard()
+		{
+			var totalWeight = _pool.Values.Sum();
+			double randomValue = new Random().NextDouble() * totalWeight;
+
+			foreach (var item in _pool)
+			{
+				if (randomValue < item.Value)
+				{
+					return new CardProperty(item.Key);
+				}
+				randomValue -= item.Value;
+			}
+
+			return new CardProperty(CardType.Archer);
 		}
 	}
 }

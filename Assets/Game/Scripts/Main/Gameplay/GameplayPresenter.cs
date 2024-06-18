@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Diagnostics;
@@ -14,6 +15,7 @@ using Optional.Collections;
 using PlasticGui.Configuration.OAuth;
 using Summary;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Gameplay
 {
@@ -42,6 +44,9 @@ namespace Gameplay
 	public static class GameplayUtility
 	{
 		public const int Length = 50;
+		
+		public static float GetWorldPosition(int Position)
+			=> (Position - Length / 2) * 1500f / Length;
 	}
 	
 	public class GameplayPresenter : IGameplayPresenter
@@ -52,12 +57,14 @@ namespace Gameplay
 		private ISummaryPresenter _summaryPresenter;
 		private TimelinePair[] _timelines;
 		
+		private ActionQueue _actionQueue;
 		
 		public GameplayPresenter(IGameplayView view, IBattleView battleView, IDeckView deckView, ISummaryPresenter summaryPresenter)
 		{
 			_view = view;
 			_summaryPresenter = summaryPresenter;
 
+			_actionQueue = new ActionQueue();
 			_view.RegisterCallback(
 				battleView,
 				deckView,
@@ -71,8 +78,8 @@ namespace Gameplay
 			_prop = new GameplayProperty(
 				new GameplayState.Open(), 
 				new List<CatProperty>(){ 
-					new CatProperty(catId++, CatType.Tower, true, -1, 20, 0, 0, 0, false),
-					new CatProperty(catId++, CatType.Tower, false, GameplayUtility.Length + 1, 20, 0, 0, 0, false)
+					new CatProperty(catId++, CatType.Tower, true, 1, 20, 0, 0, 0, false),
+					new CatProperty(catId++, CatType.Tower, false, GameplayUtility.Length - 1, 20, 0, 0, 0, false)
 				},
 				new List<CardProperty>(){ },
 				new List<CardProperty>(){ 
@@ -115,7 +122,20 @@ namespace Gameplay
 						break;
 						
 					case GameplayState.Summary:
-						await _summaryPresenter.Run();
+						var new_card = await _summaryPresenter.Run();
+						_prop = _prop with 
+						{
+							State = new GameplayState.Idle(),
+							Cats = new List<CatProperty>(){ 
+								new CatProperty(catId++, CatType.Tower, true, 1, 20, 0, 0, 0, false),
+								new CatProperty(catId++, CatType.Tower, false, GameplayUtility.Length - 1, 20, 0, 0, 0, false)
+							},
+							HandCards = new List<CardProperty>(){ },
+							DrawCards = _prop.HandCards.Concat(_prop.DrawCards).Concat(_prop.GraveCards).Append(new_card).ToList(),
+							GraveCards = new List<CardProperty>(){ },
+							DrawCardsRemainingTime = card_time_threshold
+						};
+						second = 0;
 						break;
 
 					case GameplayState.Close:
@@ -190,38 +210,64 @@ namespace Gameplay
 				var cat = cats[i];
 				if (cat.IsEnemy)
 				{
-					var newPosition = 0;
-					for (int j=0; j<=cat.Speed; j++)
+					var positions = new List<int>(){};
+					for (int j=1; j<=cat.Speed; j++)
 					{
-						newPosition = cat.Position + j;
-						if(cats.Any(otherCat => otherCat.Position == newPosition + 1))
+						var position = cat.Position + j;
+						if (position <= 0 || GameplayUtility.Length <= position)
 						{
 							break;
 						}
 						
-						if(cats.Any(otherCat => otherCat.IsEnemy != cat.IsEnemy && newPosition + 1 <= otherCat.Position && otherCat.Position <= newPosition + cat.Range))
+						if(cats.Any(otherCat => otherCat.Position == position && otherCat.IsEnemy != cat.IsEnemy))
 						{
 							break;
 						}
+						
+						if(cats.Any(otherCat => otherCat.Position == position && otherCat.IsEnemy == cat.IsEnemy))
+						{
+							continue;
+						}
+						
+						positions.Add(position);
 					}
-					cats[i] = cat with {Position = newPosition};
+					var nextEnemyPosition = cat.Position;
+					while (nextEnemyPosition < GameplayUtility.Length && !cats.Any(otherCat => otherCat.Position == nextEnemyPosition && otherCat.IsEnemy != cat.IsEnemy))
+					{
+						nextEnemyPosition ++;
+					}
+					
+					cats[i] = cat with {Position = positions.Where(position => nextEnemyPosition - position >= cat.Range).LastOrNone().ValueOr(cat.Position)};
 				} else 
 				{
-					var newPosition = 0;
-					for (int j=0; j<=cat.Speed; j++)
+					var positions = new List<int>(){};
+					for (int j=1; j<=cat.Speed; j++)
 					{
-						newPosition = cat.Position - j;
-						if(cats.Any(otherCat => otherCat.Position == newPosition - 1))
+						var position = cat.Position - j;
+						if (position <= 0 || GameplayUtility.Length <= position)
 						{
 							break;
 						}
 						
-						if(cats.Any(otherCat => otherCat.IsEnemy != cat.IsEnemy && newPosition - 1 >= otherCat.Position && otherCat.Position >= newPosition - cat.Range))
+						if(cats.Any(otherCat => otherCat.Position == position && otherCat.IsEnemy != cat.IsEnemy))
 						{
 							break;
 						}
+						
+						if(cats.Any(otherCat => otherCat.Position == position && otherCat.IsEnemy == cat.IsEnemy))
+						{
+							continue;
+						}
+						
+						positions.Add(position);
 					}
-					cats[i] = cat with {Position = newPosition};
+					var nextEnemyPosition = cat.Position;
+					while (nextEnemyPosition > 0 && !cats.Any(otherCat => otherCat.Position == nextEnemyPosition && otherCat.IsEnemy != cat.IsEnemy))
+					{
+						nextEnemyPosition --;
+					}
+					
+					cats[i] = cat with {Position = positions.Where(position => position - nextEnemyPosition >= cat.Range).LastOrNone().ValueOr(cat.Position)};
 				}
 			}
 			
@@ -231,7 +277,7 @@ namespace Gameplay
 				var isAttacking = false;
 				if (cat.IsEnemy)
 				{
-					for (int j=1; j<=cat.Range; j++)
+					for (int j=1; j<=cat.Range && !isAttacking; j++)
 					{
 						for (int k=0; k<cats.Count(); k++)
 						{
@@ -239,12 +285,21 @@ namespace Gameplay
 							{
 								cats[k] = cats[k] with {HP = cats[k].HP - cats[i].ATK};
 								isAttacking = true;
+								if (cats[i].CatType == CatType.Archer)
+								{
+									UniTask.Create(() => _view.FireProjectile(ProjectileType.Arrow, cat.IsEnemy, cats[i].Position, cats[k].Position));
+								}
+								if (cats[i].CatType == CatType.Mage)
+								{
+									UniTask.Create(() => _view.FireProjectile(ProjectileType.Fireball, cat.IsEnemy, cats[i].Position, cats[k].Position));
+								}
+								break;
 							}
 						}
 					}
 				} else 
 				{
-					for (int j=1; j<=cat.Range; j++)
+					for (int j=1; j<=cat.Range && !isAttacking; j++)
 					{
 						for (int k=0; k<cats.Count(); k++)
 						{
@@ -252,6 +307,15 @@ namespace Gameplay
 							{
 								cats[k] = cats[k] with {HP = cats[k].HP - cats[i].ATK};
 								isAttacking = true;
+								if (cats[i].CatType == CatType.Archer)
+								{
+									UniTask.Create(() => _view.FireProjectile(ProjectileType.Arrow, cat.IsEnemy, cats[i].Position, cats[k].Position));
+								}
+								if (cats[i].CatType == CatType.Mage)
+								{
+									UniTask.Create(() => _view.FireProjectile(ProjectileType.Fireball, cat.IsEnemy, cats[i].Position, cats[k].Position));
+								}
+								break;
 							}
 						}
 					}
@@ -293,6 +357,14 @@ namespace Gameplay
 			{
 				Cats = cats
 			};
+			
+			if (_prop.Cats.Any(cat => cat.CatType == CatType.Tower && cat.HP <= 0 && cat.IsEnemy))
+			{
+				_prop = _prop with 
+				{
+					State = new GameplayState.Summary()
+				};
+			}
 		}
 		
 		int catId = 0;

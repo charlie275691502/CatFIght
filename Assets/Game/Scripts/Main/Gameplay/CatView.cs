@@ -60,7 +60,7 @@ namespace Gameplay
 			gameObject.SetActive(true);
 			
 			_character.localScale = new Vector2(prop.IsEnemy ? -1 : 1, 1);
-			transform.localPosition = new Vector2((prop.Position - GameplayUtility.Length / 2) * 1500f / GameplayUtility.Length, 0);
+			transform.localPosition = new Vector2(GameplayUtility.GetWorldPosition(prop.Position), 0);
 			_health.text = prop.HP.ToString();
 			_name.text = prop.CatType.ToString();
 			
