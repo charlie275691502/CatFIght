@@ -20,7 +20,9 @@ namespace Deck
 		[SerializeField]
 		private CardView[] _cardViews;
 		[SerializeField]
-		private Text _countingDownText;
+		private Image _image;
+		[SerializeField]
+		private Sprite[] _seconds;
 
 		private GameplayProperty _prop;
 
@@ -52,7 +54,7 @@ namespace Deck
 					_cardViews[i].Hide();
 				}
 			}
-			_countingDownText.text = Mathf.CeilToInt(prop.DrawCardsRemainingTime).ToString();
+			_image.sprite = _seconds[Mathf.CeilToInt(prop.DrawCardsRemainingTime) - 1];
 		}
 	}
 }
