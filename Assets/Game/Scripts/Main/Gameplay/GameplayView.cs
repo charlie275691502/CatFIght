@@ -14,7 +14,7 @@ namespace Gameplay
 {
 	public interface IGameplayView
 	{
-		void RegisterCallback(IBattleView battleView, IDeckView deckView, Action<int> onClickCard);
+		void RegisterCallback(IBattleView battleView, IDeckView deckView, Action<int> onClickCard, Action onClickSetting);
 		void Render(GameplayProperty prop);
 		UniTask FireProjectile(ProjectileType type, bool isEnemy, int fromPosition, int toPosition);
 		UniTask HitEffect(int catId);
@@ -47,13 +47,16 @@ namespace Gameplay
 		[SerializeField]
 		private ProjectilePair[] _projectiles;
 
-		void IGameplayView.RegisterCallback(IBattleView battleView, IDeckView deckView, Action<int> onClickCard)
+		void IGameplayView.RegisterCallback(IBattleView battleView, IDeckView deckView, Action<int> onClickCard, Action onClickSetting)
 		{
 			_battleView = battleView;
 			_deckView = deckView;
 			
 			_battleView.RegisterCallback();
 			_deckView.RegisterCallback(onClickCard);
+			
+			_button.onClick.RemoveAllListeners();
+			_button.onClick.AddListener(() => onClickSetting?.Invoke());
 		}
 
 		void IGameplayView.Render(GameplayProperty prop)

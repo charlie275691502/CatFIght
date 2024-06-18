@@ -1,6 +1,7 @@
 using Battle;
 using Deck;
 using Gameplay;
+using HoldingCards;
 using Retry;
 using Summary;
 using UnityEngine;
@@ -20,6 +21,8 @@ namespace Main
 		private SummaryView _summaryView;
 		[SerializeField]
 		private RetryView _retryView;
+		[SerializeField]
+		private HoldingCardsView _holdingCardsView;
 
 		public override void InstallBindings()
 		{
@@ -60,6 +63,15 @@ namespace Main
 				.Bind<IRetryView>()
 				.To<RetryView>()
 				.FromInstance(_retryView);
+			
+			Container
+				.Bind<IHoldingCardsPresenter>()
+				.To<HoldingCardsPresenter>()
+				.AsSingle();
+			Container
+				.Bind<IHoldingCardsView>()
+				.To<HoldingCardsView>()
+				.FromInstance(_holdingCardsView);
 				
 			#endregion
 		}

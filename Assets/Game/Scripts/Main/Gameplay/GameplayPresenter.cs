@@ -10,6 +10,7 @@ using Codice.CM.Client.Differences.Merge;
 using Common;
 using Cysharp.Threading.Tasks;
 using Deck;
+using HoldingCards;
 using Main;
 using Optional.Collections;
 using PlasticGui.Configuration.OAuth;
@@ -32,6 +33,7 @@ namespace Gameplay
 		public record OnClickCard(int Index) : GameplayState;
 		public record Summary() : GameplayState;
 		public record Retry() : GameplayState;
+		public record Setting() : GameplayState;
 		public record Close() : GameplayState;
 	}
 
@@ -58,22 +60,29 @@ namespace Gameplay
 		private GameplayProperty _prop;
 		private ISummaryPresenter _summaryPresenter;
 		private IRetryPresenter _retryPresenter;
+		private IHoldingCardsPresenter _holdingCardsPresenter;
 		private Stage[] _timelines;
 		
 		private ActionQueue _actionQueue;
+		private Dictionary<bool, int> _powerUpSecs = new Dictionary<bool, int>(){ {true, 0}, {false, 0} };
+		private Dictionary<bool, int> _freezeSecs = new Dictionary<bool, int>(){ {true, 0}, {false, 0} };
 		
-		public GameplayPresenter(IGameplayView view, IBattleView battleView, IDeckView deckView, ISummaryPresenter summaryPresenter, IRetryPresenter retryPresenter)
+		public GameplayPresenter(IGameplayView view, IBattleView battleView, IDeckView deckView, ISummaryPresenter summaryPresenter, IRetryPresenter retryPresenter, IHoldingCardsPresenter holdingCardsPresenter)
 		{
 			_view = view;
 			_summaryPresenter = summaryPresenter;
 			_retryPresenter = retryPresenter;
+			_holdingCardsPresenter = holdingCardsPresenter;
 
 			_actionQueue = new ActionQueue();
 			_view.RegisterCallback(
 				battleView,
 				deckView,
 				(index) =>
-					_ChangeStateIfIdle(new GameplayState.OnClickCard(index)));
+					_ChangeStateIfIdle(new GameplayState.OnClickCard(index)),
+					
+				() =>
+					_ChangeStateIfIdle(new GameplayState.Setting()));
 		}
 
 		int stage = 0;
@@ -84,8 +93,8 @@ namespace Gameplay
 			_prop = new GameplayProperty(
 				new GameplayState.Open(), 
 				new List<CatProperty>(){ 
-					new CatProperty(catId++, CatType.Tower, true, 1, 20, 0, 0, 0, false),
-					new CatProperty(catId++, CatType.Tower, false, GameplayUtility.Length - 1, 20, 0, 0, 0, false)
+					new CatProperty(catId++, CatType.Tower, true, 1, 15, 0, 0, 0, false),
+					new CatProperty(catId++, CatType.Tower, false, GameplayUtility.Length - 1, 15, 0, 0, 0, false)
 				},
 				new List<CardProperty>(){ },
 				new List<CardProperty>(){ 
@@ -102,6 +111,9 @@ namespace Gameplay
 				},
 				new List<CardProperty>(){ },
 				card_time_threshold);
+				
+			_DrawCard();
+			_DrawCard();
 			
 			while (_prop.State is not GameplayState.Close)
 			{
@@ -133,8 +145,8 @@ namespace Gameplay
 						{
 							State = new GameplayState.Idle(),
 							Cats = new List<CatProperty>(){ 
-								new CatProperty(catId++, CatType.Tower, true, 1, 20, 0, 0, 0, false),
-								new CatProperty(catId++, CatType.Tower, false, GameplayUtility.Length - 1, 20, 0, 0, 0, false)
+								new CatProperty(catId++, CatType.Tower, true, 1, 15, 0, 0, 0, false),
+								new CatProperty(catId++, CatType.Tower, false, GameplayUtility.Length - 1, 15, 0, 0, 0, false)
 							},
 							HandCards = new List<CardProperty>(){ },
 							DrawCards = _prop.HandCards.Concat(_prop.DrawCards).Concat(_prop.GraveCards).Append(new_card).ToList(),
@@ -143,6 +155,8 @@ namespace Gameplay
 						};
 						second = 0;
 						stage += 1;
+						_DrawCard();
+						_DrawCard();
 						break;
 
 					case GameplayState.Retry:
@@ -151,8 +165,8 @@ namespace Gameplay
 						{
 							State = new GameplayState.Idle(),
 							Cats = new List<CatProperty>(){ 
-								new CatProperty(catId++, CatType.Tower, true, 1, 20, 0, 0, 0, false),
-								new CatProperty(catId++, CatType.Tower, false, GameplayUtility.Length - 1, 20, 0, 0, 0, false)
+								new CatProperty(catId++, CatType.Tower, true, 1, 15, 0, 0, 0, false),
+								new CatProperty(catId++, CatType.Tower, false, GameplayUtility.Length - 1, 15, 0, 0, 0, false)
 							},
 							HandCards = new List<CardProperty>(){ },
 							DrawCards = _prop.HandCards.Concat(_prop.DrawCards).Concat(_prop.GraveCards).ToList(),
@@ -160,8 +174,15 @@ namespace Gameplay
 							DrawCardsRemainingTime = card_time_threshold
 						};
 						second = 0;
+						_DrawCard();
+						_DrawCard();
 						break;
 
+					case GameplayState.Setting:
+						await _holdingCardsPresenter.Run(_prop.HandCards.Concat(_prop.DrawCards).Concat(_prop.GraveCards).ToList());
+						_prop = _prop with { State = new GameplayState.Idle() };
+						break;
+						
 					case GameplayState.Close:
 						break;
 
@@ -206,14 +227,14 @@ namespace Gameplay
 			
 			if (_prop.DrawCardsRemainingTime < 0)
 			{
-				_UpdateCard();
+				_DrawCard();
 				_prop = _prop with {
 					DrawCardsRemainingTime = 5f
 				};
 			}
 		}
 		
-		private void _UpdateCard()
+		private void _DrawCard()
 		{
 			if(_prop.HandCards.Count() == 0)
 			{
@@ -222,7 +243,9 @@ namespace Gameplay
 			}
 			if(_prop.HandCards.Count() < 5)
 			{
-				_prop.HandCards.Add(_prop.DrawCards[UnityEngine.Random.Range(0, _prop.DrawCards.Count())]);
+				var randomIndex = UnityEngine.Random.Range(0, _prop.DrawCards.Count());
+				_prop.HandCards.Add(_prop.DrawCards[randomIndex]);
+				_prop.DrawCards.RemoveAt(randomIndex);
 			}
 		}
 		
@@ -235,7 +258,7 @@ namespace Gameplay
 				if (cat.IsEnemy)
 				{
 					var positions = new List<int>(){};
-					for (int j=1; j<=cat.Speed; j++)
+					for (int j=1; j<=((_freezeSecs[cat.IsEnemy] > 0) ? 0 : cat.Speed); j++)
 					{
 						var position = cat.Position + j;
 						if (position <= 0 || GameplayUtility.Length <= position)
@@ -265,7 +288,7 @@ namespace Gameplay
 				} else 
 				{
 					var positions = new List<int>(){};
-					for (int j=1; j<=cat.Speed; j++)
+					for (int j=1; j<=((_freezeSecs[cat.IsEnemy] > 0) ? 0 : cat.Speed) ; j++)
 					{
 						var position = cat.Position - j;
 						if (position <= 0 || GameplayUtility.Length <= position)
@@ -307,7 +330,7 @@ namespace Gameplay
 						{
 							if(cats[k].IsEnemy != cat.IsEnemy && cats[k].Position == cat.Position + j)
 							{
-								cats[k] = cats[k] with {HP = cats[k].HP - cats[i].ATK};
+								cats[k] = cats[k] with {HP = cats[k].HP - cats[i].ATK * ((_powerUpSecs[cat.IsEnemy] > 0) ? 2 : 1)};
 								isAttacking = true;
 								UniTask.Create(() => _view.HitEffect(cats[k].Id));
 								if (cats[i].CatType == CatType.Archer)
@@ -330,7 +353,7 @@ namespace Gameplay
 						{
 							if(cats[k].IsEnemy != cat.IsEnemy && cats[k].Position == cat.Position - j)
 							{
-								cats[k] = cats[k] with {HP = cats[k].HP - cats[i].ATK};
+								cats[k] = cats[k] with {HP = cats[k].HP - cats[i].ATK * ((_powerUpSecs[cat.IsEnemy] > 0) ? 2 : 1)};
 								isAttacking = true;
 								UniTask.Create(() => _view.HitEffect(cats[k].Id));
 								if (cats[i].CatType == CatType.Archer)
@@ -379,6 +402,11 @@ namespace Gameplay
 					});
 			}
 			
+			_powerUpSecs[true] = Mathf.Max(0, _powerUpSecs[true]-1);
+			_powerUpSecs[false] = Mathf.Max(0, _powerUpSecs[false]-1);
+			_freezeSecs[true] = Mathf.Max(0, _freezeSecs[true]-1);
+			_freezeSecs[false] = Mathf.Max(0, _freezeSecs[false]-1);
+			
 			_prop = _prop with 
 			{
 				Cats = cats
@@ -423,12 +451,44 @@ namespace Gameplay
 					_prop.Cats.Add(new CatProperty(catId++,CatType.Wizard, false, GameplayUtility.Length, 2, 3, 3, 5, false));
 					break;
 				case CardType.DoubleDamage:
+					_powerUpSecs[false] += 5;
 					break;
-				case CardType.MaxHealth:
-					break;
-				case CardType.FireCard:
-					break;
+				case CardType.MaxHealth:{
+					var cats = _prop.Cats.Where(cat => cat.HP > 0).ToList();
+					for(int i=0; i<cats.Count(); i++)
+					{
+						if(cats[i].IsEnemy == false)
+						{
+							cats[i] = cats[i] with 
+							{
+								HP = cats[i].HP + 2	
+							};
+						}
+					}
+					_prop = _prop with 
+					{
+						Cats = cats
+					};
+					break;}
+				case CardType.FireCard:{
+					var cats = _prop.Cats.Where(cat => cat.HP > 0).ToList();
+					for(int i=0; i<cats.Count(); i++)
+					{
+						if(cats[i].IsEnemy)
+						{
+							cats[i] = cats[i] with 
+							{
+								HP = cats[i].HP - 1
+							};
+						}
+					}
+					_prop = _prop with 
+					{
+						Cats = cats
+					};
+					break;}
 				case CardType.FreezingCard:
+					_freezeSecs[true] += 5;
 					break;
 			}
 		}
