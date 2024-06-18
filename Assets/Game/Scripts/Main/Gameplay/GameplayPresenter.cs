@@ -480,9 +480,17 @@ namespace Gameplay
 				case CardType.Wizard:
 					_prop.Cats.Add(new CatProperty(catId++,CatType.Wizard, false, GameplayUtility.Length, 2, 3, 3, 5, false));
 					break;
-				case CardType.DoubleDamage:
+				case CardType.DoubleDamage:{
 					_powerUpSecs[false] += 5;
-					break;
+					var cats = _prop.Cats.Where(cat => cat.HP > 0).ToList();
+					for(int i=0; i<cats.Count(); i++)
+					{
+						if(cats[i].IsEnemy)
+						{
+							UniTask.Create(() => _view.FireProjectile(ProjectileType.PowerUp, true, cats[i].Position, cats[i].Position, 4.5f));
+						}
+					}
+					break;}
 				case CardType.MaxHealth:{
 					var cats = _prop.Cats.Where(cat => cat.HP > 0).ToList();
 					for(int i=0; i<cats.Count(); i++)
@@ -493,6 +501,7 @@ namespace Gameplay
 							{
 								HP = cats[i].HP + 2	
 							};
+							UniTask.Create(() => _view.FireProjectile(ProjectileType.Heal, false, cats[i].Position, cats[i].Position, 4.5f));
 						}
 					}
 					_prop = _prop with 
@@ -510,6 +519,7 @@ namespace Gameplay
 							{
 								HP = cats[i].HP - 1
 							};
+							UniTask.Create(() => _view.FireProjectile(ProjectileType.Fireball, false, GameplayUtility.Length, cats[i].Position));
 						}
 					}
 					_prop = _prop with 
@@ -517,9 +527,17 @@ namespace Gameplay
 						Cats = cats
 					};
 					break;}
-				case CardType.FreezingCard:
+				case CardType.FreezingCard:{
 					_freezeSecs[true] += 5;
-					break;
+					var cats = _prop.Cats.Where(cat => cat.HP > 0).ToList();
+					for(int i=0; i<cats.Count(); i++)
+					{
+						if(cats[i].IsEnemy)
+						{
+							UniTask.Create(() => _view.FireProjectile(ProjectileType.Ice, true, cats[i].Position, cats[i].Position, 4.5f));
+						}
+					}
+					break;}
 			}
 		}
 	}

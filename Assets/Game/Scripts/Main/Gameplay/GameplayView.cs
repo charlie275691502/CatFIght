@@ -16,7 +16,7 @@ namespace Gameplay
 	{
 		void RegisterCallback(IBattleView battleView, IDeckView deckView, Action<int> onClickCard, Action onClickSetting);
 		void Render(GameplayProperty prop);
-		UniTask FireProjectile(ProjectileType type, bool isEnemy, int fromPosition, int toPosition);
+		UniTask FireProjectile(ProjectileType type, bool isEnemy, int fromPosition, int toPosition, float duration = 0.5f);
 		UniTask HitEffect(int catId);
 	}
 	
@@ -24,6 +24,9 @@ namespace Gameplay
 	{
 		Arrow,
 		Fireball,
+		Ice,
+		PowerUp,
+		Heal,
 	}
 	
 	[Serializable]
@@ -110,7 +113,7 @@ namespace Gameplay
 			}
 		}
 		
-		async UniTask IGameplayView.FireProjectile(ProjectileType type, bool isEnemy, int fromPosition, int toPosition)
+		async UniTask IGameplayView.FireProjectile(ProjectileType type, bool isEnemy, int fromPosition, int toPosition, float duration = 0.5f)
 		{
 			var opt = _projectiles
 				.FirstOrNone(pair => pair.ProjectileType == type);
@@ -121,7 +124,7 @@ namespace Gameplay
 				gmo.transform.localScale = new Vector2(isEnemy ? -1 : 1, 1);
 				var from = GameplayUtility.GetWorldPosition(fromPosition);
 				var to = GameplayUtility.GetWorldPosition(toPosition);
-				for(float time=0f; time <= 0.5f; time+= UnityEngine.Time.deltaTime)
+				for(float time=0f; time <= duration; time+= UnityEngine.Time.deltaTime)
 				{
 					gmo.transform.localPosition = new Vector2(from + (to - from) * time / 0.5f, 0);
 					await UniTask.Yield();
