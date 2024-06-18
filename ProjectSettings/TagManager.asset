@@ -59,6 +59,12 @@ TagManager:
   - name: Cats
     uniqueID: 2229970671
     locked: 0
+  - name: New Layer 8
+    uniqueID: 3469884279
+    locked: 0
+  - name: Cards
+    uniqueID: 3165350217
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
