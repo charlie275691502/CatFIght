@@ -71,6 +71,7 @@ namespace Gameplay
 				case GameplayState.Idle:
 				case GameplayState.OnClickCard:
 				case GameplayState.Summary:
+				case GameplayState.Retry:
 					_Render(prop);
 					break;
 

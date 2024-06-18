@@ -13,6 +13,7 @@ using Deck;
 using Main;
 using Optional.Collections;
 using PlasticGui.Configuration.OAuth;
+using Retry;
 using Summary;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -30,6 +31,7 @@ namespace Gameplay
 		public record Idle() : GameplayState;
 		public record OnClickCard(int Index) : GameplayState;
 		public record Summary() : GameplayState;
+		public record Retry() : GameplayState;
 		public record Close() : GameplayState;
 	}
 
@@ -55,14 +57,16 @@ namespace Gameplay
 
 		private GameplayProperty _prop;
 		private ISummaryPresenter _summaryPresenter;
+		private IRetryPresenter _retryPresenter;
 		private Stage[] _timelines;
 		
 		private ActionQueue _actionQueue;
 		
-		public GameplayPresenter(IGameplayView view, IBattleView battleView, IDeckView deckView, ISummaryPresenter summaryPresenter)
+		public GameplayPresenter(IGameplayView view, IBattleView battleView, IDeckView deckView, ISummaryPresenter summaryPresenter, IRetryPresenter retryPresenter)
 		{
 			_view = view;
 			_summaryPresenter = summaryPresenter;
+			_retryPresenter = retryPresenter;
 
 			_actionQueue = new ActionQueue();
 			_view.RegisterCallback(
@@ -139,6 +143,23 @@ namespace Gameplay
 						};
 						second = 0;
 						stage += 1;
+						break;
+
+					case GameplayState.Retry:
+						await _retryPresenter.Run();
+						_prop = _prop with 
+						{
+							State = new GameplayState.Idle(),
+							Cats = new List<CatProperty>(){ 
+								new CatProperty(catId++, CatType.Tower, true, 1, 20, 0, 0, 0, false),
+								new CatProperty(catId++, CatType.Tower, false, GameplayUtility.Length - 1, 20, 0, 0, 0, false)
+							},
+							HandCards = new List<CardProperty>(){ },
+							DrawCards = _prop.HandCards.Concat(_prop.DrawCards).Concat(_prop.GraveCards).ToList(),
+							GraveCards = new List<CardProperty>(){ },
+							DrawCardsRemainingTime = card_time_threshold
+						};
+						second = 0;
 						break;
 
 					case GameplayState.Close:
@@ -368,6 +389,12 @@ namespace Gameplay
 				_prop = _prop with 
 				{
 					State = new GameplayState.Summary()
+				};
+			} else if (_prop.Cats.Any(cat => cat.CatType == CatType.Tower && cat.HP <= 0 && !cat.IsEnemy))
+			{
+				_prop = _prop with 
+				{
+					State = new GameplayState.Retry()
 				};
 			}
 		}

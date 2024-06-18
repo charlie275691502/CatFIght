@@ -1,6 +1,7 @@
 using Battle;
 using Deck;
 using Gameplay;
+using Retry;
 using Summary;
 using UnityEngine;
 using Zenject;
@@ -17,6 +18,8 @@ namespace Main
 		private DeckView _deckView;
 		[SerializeField]
 		private SummaryView _summaryView;
+		[SerializeField]
+		private RetryView _retryView;
 
 		public override void InstallBindings()
 		{
@@ -48,6 +51,15 @@ namespace Main
 				.Bind<ISummaryView>()
 				.To<SummaryView>()
 				.FromInstance(_summaryView);
+			
+			Container
+				.Bind<IRetryPresenter>()
+				.To<RetryPresenter>()
+				.AsSingle();
+			Container
+				.Bind<IRetryView>()
+				.To<RetryView>()
+				.FromInstance(_retryView);
 				
 			#endregion
 		}
