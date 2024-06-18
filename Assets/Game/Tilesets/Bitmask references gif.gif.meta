@@ -132,7 +132,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Bitmask references gif_0: 7827745926363232655
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

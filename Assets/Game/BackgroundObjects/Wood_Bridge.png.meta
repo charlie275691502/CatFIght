@@ -207,7 +207,11 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Wood_Bridge_0: 4956269106429387390
+      Wood_Bridge_1: 4862296632235645072
+      Wood_Bridge_2: -4427305370546596192
+      Wood_Bridge_3: -7859731751886911959
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

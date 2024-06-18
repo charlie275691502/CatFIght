@@ -132,7 +132,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Free_Chicken_House_0: 7947428505529812925
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

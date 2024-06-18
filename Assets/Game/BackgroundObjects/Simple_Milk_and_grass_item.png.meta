@@ -207,7 +207,11 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Simple_Milk_and_grass_item_0: 4229554147986482014
+      Simple_Milk_and_grass_item_1: -3243293964076229483
+      Simple_Milk_and_grass_item_2: -6342842787030672830
+      Simple_Milk_and_grass_item_3: 1345720801523358028
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

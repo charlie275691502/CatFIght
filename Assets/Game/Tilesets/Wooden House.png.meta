@@ -182,7 +182,10 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Wooden House_0: 7085867596842554298
+      Wooden House_1: 4254711904356956532
+      Wooden House_2: 2095621696493076028
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -307,7 +307,15 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Tilled_Dirt_0: 364838648902741839
+      Tilled_Dirt_1: 7917991578981554403
+      Tilled_Dirt_2: -2099236526760558191
+      Tilled_Dirt_3: 3224765810789476902
+      Tilled_Dirt_4: -6209117606152128999
+      Tilled_Dirt_5: 6220403071267209537
+      Tilled_Dirt_6: -7926909636535640456
+      Tilled_Dirt_7: 873899288347852103
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
