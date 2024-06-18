@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Common.LinqExtension;
 using Cysharp.Threading.Tasks.Triggers;
 using Optional.Collections;
@@ -34,10 +35,6 @@ namespace Gameplay
 		[SerializeField]
 		private Transform _character;
 		[SerializeField]
-		private Text _health;
-		[SerializeField]
-		private Text _name;
-		[SerializeField]
 		private CatKeyPair[] _keys;
 		[SerializeField]
 		private Color _hitColor;
@@ -45,6 +42,18 @@ namespace Gameplay
 		private Color _normalColor;
 		[SerializeField]
 		private SpriteRenderer[] _images;
+		[SerializeField]
+		private GameObject _catHealthBarGmo;
+		[SerializeField]
+		private SpriteRenderer _catHealthBar;
+		[SerializeField]
+		private Sprite[] _catHealthImages;
+		[SerializeField]
+		private GameObject _towerHealthBarGmo;
+		[SerializeField]
+		private SpriteRenderer _towerHealthBar;
+		[SerializeField]
+		private Sprite[] _towerHealthImages;
 
 		private CatProperty _prop;
 	
@@ -68,8 +77,11 @@ namespace Gameplay
 			
 			_character.localScale = new Vector2(prop.IsEnemy ? -1 : 1, 1);
 			transform.localPosition = new Vector2(GameplayUtility.GetWorldPosition(prop.Position), 0);
-			_health.text = prop.HP.ToString();
-			_name.text = prop.CatType.ToString();
+			
+			_catHealthBarGmo.SetActive(prop.CatType != CatType.Tower);
+			_towerHealthBarGmo.SetActive(prop.CatType == CatType.Tower);
+			_catHealthBar.sprite = _catHealthImages[Mathf.Clamp(prop.HP, 0, _catHealthImages.Count() - 1)];
+			_towerHealthBar.sprite = _towerHealthImages[Mathf.Clamp(prop.HP, 0, _towerHealthImages.Count() - 1)];
 			
 			foreach(var key in _keys)
 			{
