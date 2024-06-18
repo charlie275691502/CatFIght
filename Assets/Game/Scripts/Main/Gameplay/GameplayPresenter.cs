@@ -38,7 +38,7 @@ namespace Gameplay
 	
 	public interface IGameplayPresenter
 	{
-		UniTask Run(TimelinePair[] timelines);
+		UniTask Run(Stage[] timelines);
 	}
 	
 	public static class GameplayUtility
@@ -55,7 +55,7 @@ namespace Gameplay
 
 		private GameplayProperty _prop;
 		private ISummaryPresenter _summaryPresenter;
-		private TimelinePair[] _timelines;
+		private Stage[] _timelines;
 		
 		private ActionQueue _actionQueue;
 		
@@ -72,8 +72,10 @@ namespace Gameplay
 					_ChangeStateIfIdle(new GameplayState.OnClickCard(index)));
 		}
 
-		async UniTask IGameplayPresenter.Run(TimelinePair[] timelines)
+		int stage = 0;
+		async UniTask IGameplayPresenter.Run(Stage[] timelines)
 		{
+			stage = 0;
 			_timelines = timelines;
 			_prop = new GameplayProperty(
 				new GameplayState.Open(), 
@@ -136,6 +138,7 @@ namespace Gameplay
 							DrawCardsRemainingTime = card_time_threshold
 						};
 						second = 0;
+						stage += 1;
 						break;
 
 					case GameplayState.Close:
@@ -327,7 +330,7 @@ namespace Gameplay
 			
 			if (cats.All(otherCat => otherCat.Position != 0))
 			{
-				_timelines
+				_timelines[stage].Timeline
 					.FirstOrNone(timeline => timeline.Second == second)
 					.MatchSome(timeline => 
 					{

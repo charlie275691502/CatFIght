@@ -15,6 +15,12 @@ namespace Main
 	public record MainProperty(MainState State);
 
 	[Serializable]
+	public class Stage
+	{
+		public TimelinePair[] Timeline;
+	}
+	
+	[Serializable]
 	public class TimelinePair
 	{
 		public int Second;
@@ -26,7 +32,7 @@ namespace Main
 		private IGameplayPresenter _gameplayPresenter;
 		
 		[SerializeField]
-		private TimelinePair[] _timeline;
+		private Stage[] _timeline;
 
 		[Zenject.Inject]
 		public void Zenject(IGameplayPresenter gameplayPresenter)
