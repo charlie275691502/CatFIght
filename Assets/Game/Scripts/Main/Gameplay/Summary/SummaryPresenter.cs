@@ -35,9 +35,14 @@ namespace Summary
 		
 		private Dictionary<CardType, float> _pool = new Dictionary<CardType, float>()
 		{
-			{CardType.Archer, 1},
-			{CardType.Warrior, 3},
+			{CardType.Archer, 2},
+			{CardType.Warrior, 2},
 			{CardType.Mage, 2},
+			{CardType.DoubleDamage, 1},
+			{CardType.FireCard, 1},
+			{CardType.FreezingCard, 1},
+			{CardType.MaxHealth, 1},
+			
 		};
 
 		public SummaryPresenter(ISummaryView view)
