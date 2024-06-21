@@ -246,7 +246,11 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Cat_archer_spritesheet_walk_0: 1106877787352151007
+      Cat_archer_spritesheet_walk_1: 4772988764502840769
+      Cat_archer_spritesheet_walk_2: 253714887137464437
+      Cat_archer_spritesheet_walk_3: -3577981419865897525
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -1,15 +1,10 @@
 using System;
 using System.Linq;
-using Common.LinqExtension;
-using Cysharp.Threading.Tasks.Triggers;
-using Optional.Collections;
-using Unity.VisualScripting.YamlDotNet.Core.Tokens;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Gameplay
 {
-	public enum CatType
+    public enum CatType
 	{
 		Tower,
 		Archer,

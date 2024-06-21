@@ -1,27 +1,20 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Data.Common;
-using System.Diagnostics;
 using System.Linq;
 using Battle;
-using Codice.Client.Common;
-using Codice.CM.Client.Differences.Merge;
 using Common;
 using Cysharp.Threading.Tasks;
 using Deck;
 using HoldingCards;
 using Main;
 using Optional.Collections;
-using PlasticGui.Configuration.OAuth;
 using Retry;
 using Summary;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace Gameplay
 {
-	public record GameplaySubTabReturnType()
+    public record GameplaySubTabReturnType()
 	{
 		public record Close() : GameplaySubTabReturnType;
 	}

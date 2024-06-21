@@ -246,7 +246,11 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Cat_Warrior_spritesheet_walking_0: 7086376774911230227
+      Cat_Warrior_spritesheet_walking_1: -2958843978904048263
+      Cat_Warrior_spritesheet_walking_2: -7632251400900924133
+      Cat_Warrior_spritesheet_walking_3: 1112781155110216817
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
