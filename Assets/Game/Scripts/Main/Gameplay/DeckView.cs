@@ -23,6 +23,8 @@ namespace Deck
 		private Image _image;
 		[SerializeField]
 		private Sprite[] _seconds;
+		[SerializeField]
+		private Text _timeLeft;
 
 		private GameplayProperty _prop;
 
@@ -42,6 +44,7 @@ namespace Deck
 
 		private void _Render(GameplayProperty prop)
 		{
+			_timeLeft.text = Mathf.CeilToInt(prop.DrawCardsRemainingTime).ToString();
 			for(int i=0; i<_cardViews.Count(); i++)
 			{
 				var index = i;
